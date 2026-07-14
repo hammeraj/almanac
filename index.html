@@ -30,6 +30,10 @@
     --radius:16px;
   }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  input[type="text"], input[type="number"]{
+    border:1px solid var(--line); border-radius:10px; background:var(--paper); color:var(--ink);
+    font-family:'Inter',sans-serif; padding:9px 12px;
+  }
   html,body{margin:0; padding:0; background:var(--paper); color:var(--ink); font-family:'Inter',sans-serif;}
   body{
     display:flex; justify-content:center;
@@ -177,6 +181,60 @@
   .hourly-count{font-family:'Fraunces',serif; font-size:26px; min-width:34px; text-align:center;}
   .single-note{font-size:13.5px; color:var(--ink); line-height:1.6; background:var(--paper); border-radius:10px; padding:12px 14px;}
   .why-note{font-size:12.5px; color:var(--ink-soft); line-height:1.6; margin-top:2px;}
+
+  /* exercise info button + modal */
+  .info-btn{
+    width:22px; height:22px; border-radius:50%; border:1px solid var(--line); background:var(--paper);
+    color:var(--ink-soft); font-family:'Fraunces',serif; font-style:italic; font-size:13px; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center; margin-left:8px; margin-top:1px;
+  }
+  .check-item{justify-content:space-between;}
+  .check-item-main{display:flex; align-items:flex-start; gap:11px; flex:1;}
+  .modal-overlay{
+    display:none; position:fixed; inset:0; background:rgba(30,42,34,0.45);
+    align-items:flex-end; justify-content:center; z-index:50;
+  }
+  .modal-overlay.open{display:flex;}
+  .modal-sheet{
+    background:var(--card); width:100%; max-width:430px; border-radius:20px 20px 0 0;
+    padding:20px 20px calc(24px + env(safe-area-inset-bottom)); max-height:82vh; overflow-y:auto;
+  }
+  .modal-top{display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;}
+  .modal-close{
+    width:30px; height:30px; border-radius:50%; border:1px solid var(--line); background:var(--paper);
+    font-size:15px; color:var(--ink-soft); flex-shrink:0;
+  }
+  .modal-diagram{background:var(--paper); border-radius:12px; padding:6px 0; margin:10px 0 14px; display:flex; justify-content:center;}
+  .modal-desc{font-size:14px; color:var(--ink); line-height:1.6; margin-bottom:12px;}
+  .cue-list{margin:0; padding:0; list-style:none;}
+  .cue-list li{
+    font-size:13.5px; color:var(--ink-soft); padding:7px 0 7px 18px; border-top:1px solid var(--line);
+    position:relative; line-height:1.5;
+  }
+  .cue-list li:before{content:'—'; position:absolute; left:0; color:var(--moss);}
+
+  /* meals */
+  .goal-row{display:flex; align-items:center; gap:8px; margin-bottom:4px;}
+  .goal-row input{width:80px;}
+  .progress-track{height:8px; border-radius:4px; background:var(--line); overflow:hidden; margin:10px 0 4px;}
+  .progress-fill{height:100%; background:var(--moss); border-radius:4px; transition:width 0.3s ease;}
+  .meal-row{display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid var(--line);}
+  .meal-row:last-of-type{border-bottom:none;}
+  .meal-row .fname{flex:1; font-size:14px;}
+  .meal-row .fmeta{font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--ink-soft); white-space:nowrap;}
+  .meal-del{
+    width:22px; height:22px; border-radius:50%; border:1px solid var(--line); background:var(--paper);
+    color:var(--ink-soft); font-size:13px; flex-shrink:0;
+  }
+  .add-food-row{display:flex; gap:8px; margin-top:10px;}
+  .add-food-row input{padding:8px 10px; font-size:13px;}
+  .add-food-row .fname-input{flex:2; min-width:0;}
+  .add-food-row .fnum-input{flex:1; min-width:0;}
+  .add-food-btn{
+    border:1px solid var(--moss); background:var(--moss-light); color:#1F4636; border-radius:10px;
+    padding:8px 14px; font-size:13px; font-weight:500; flex-shrink:0;
+  }
+  .meal-total{font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--ink-soft);}
 </style>
 </head>
 <body>
@@ -257,16 +315,25 @@
     <div id="planContent"></div>
   </div>
 
+  <div id="mealsView" class="view">
+    <div id="mealsContent"></div>
+  </div>
+
   <div id="trendsView" class="view">
     <div id="trendsContent"></div>
   </div>
 
 </div>
 
+<div class="modal-overlay" id="exerciseModalOverlay">
+  <div class="modal-sheet" id="exerciseModalSheet"></div>
+</div>
+
 <div class="tabbar">
   <div class="tabbar-inner">
     <div class="tab active" id="tabToday">Today</div>
     <div class="tab" id="tabPlan">Plan</div>
+    <div class="tab" id="tabMeals">Meals</div>
     <div class="tab" id="tabTrends">Trends</div>
   </div>
 </div>
@@ -349,6 +416,101 @@
     ]}
   ];
 
+  function poseSVG(type){
+    const L = '<g fill="none" stroke="var(--ink)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">';
+    const H = (cx,cy)=>'<circle cx="'+cx+'" cy="'+cy+'" r="10" fill="var(--card)" stroke="var(--ink)" stroke-width="5"/>';
+    const P = (pts)=>'<polyline points="'+pts+'"/>';
+    const LN = (a,b,c,d)=>'<line x1="'+a+'" y1="'+b+'" x2="'+c+'" y2="'+d+'"/>';
+    const W = (cx,cy)=>'<circle cx="'+cx+'" cy="'+cy+'" r="7" fill="var(--amber)" stroke="none"/>';
+    let inner = '';
+    switch(type){
+      case 'squat':
+        inner = H(80,28)+LN(80,38,78,78)+P('78,78 55,95 60,125')+P('78,78 100,95 96,125')+P('80,48 62,62 72,80')+P('80,48 98,62 88,80')+W(80,82);
+        break;
+      case 'hinge':
+        inner = H(58,32)+LN(55,45,90,80)+P('90,80 88,105 90,128')+P('55,45 52,70 50,95')+LN(30,95,70,95)+'<circle cx="30" cy="95" r="6" fill="var(--amber)" stroke="none"/><circle cx="70" cy="95" r="6" fill="var(--amber)" stroke="none"/>';
+        break;
+      case 'lunge':
+        inner = H(75,26)+LN(75,36,73,75)+P('73,75 55,95 60,120')+P('73,75 95,100 110,118')+P('75,45 65,60 70,75')+P('75,45 85,60 80,75');
+        break;
+      case 'overhead-press':
+        inner = H(80,30)+LN(80,40,78,80)+P('78,80 70,105 68,128')+P('78,80 86,105 88,128')+P('80,42 65,20 60,5')+P('80,42 95,20 100,5')+LN(60,5,100,5);
+        break;
+      case 'bench-press':
+        inner = H(20,70)+LN(30,70,90,70)+P('90,70 100,90 90,110')+LN(15,80,100,80)+LN(55,68,55,35)+LN(40,35,70,35)+'<circle cx="40" cy="35" r="6" fill="var(--amber)" stroke="none"/><circle cx="70" cy="35" r="6" fill="var(--amber)" stroke="none"/>';
+        break;
+      case 'row':
+        inner = H(58,32)+LN(55,45,90,80)+P('90,80 88,105 90,128')+P('55,45 70,55 85,50')+'<line x1="85" y1="50" x2="122" y2="60" stroke-dasharray="3,5" stroke="var(--moss)" stroke-width="3"/><circle cx="122" cy="60" r="4" fill="var(--moss)" stroke="none"/>';
+        break;
+      case 'pulldown':
+        inner = H(80,25)+LN(80,34,78,75)+P('78,75 60,85 55,100')+P('78,75 95,88 100,102')+P('80,40 55,45 40,55')+P('80,40 105,45 120,55')+LN(40,45,120,45)+'<line x1="80" y1="45" x2="80" y2="10" stroke-dasharray="3,5" stroke="var(--moss)" stroke-width="3"/>';
+        break;
+      case 'carry':
+        inner = H(80,28)+LN(80,38,78,78)+P('78,78 65,100 60,125')+P('78,78 92,102 98,120')+LN(80,42,75,85)+LN(80,42,88,85)+W(75,88)+W(88,88);
+        break;
+      case 'calf-raise':
+        inner = H(80,28)+LN(80,38,78,80)+P('78,80 75,112 70,124')+P('78,80 85,112 90,124')+LN(65,127,78,124)+LN(82,127,95,124);
+        break;
+      case 'plank-side':
+        inner = H(28,52)+LN(40,58,102,63)+P('40,58 38,80 38,96')+LN(102,63,140,67)+P('45,55 55,42 60,35');
+        break;
+      case 'quadruped':
+        inner = H(107,58)+LN(100,65,65,70)+LN(100,65,110,100)+LN(65,70,60,100)+LN(65,70,35,72);
+        break;
+      case 'supine':
+        inner = H(22,80)+LN(34,80,90,80)+P('90,80 96,55 78,50')+LN(34,80,10,60);
+        break;
+      case 'kneeling-stretch':
+        inner = H(75,24)+LN(75,33,73,68)+P('73,68 55,88 50,108')+P('73,68 95,98 106,113')+LN(75,40,60,73);
+        break;
+      case 'standing-mobility':
+        inner = '<line x1="140" y1="8" x2="140" y2="130" stroke="var(--line)" stroke-width="5"/>'+H(70,26)+LN(70,36,68,73)+P('68,73 60,98 58,123')+P('68,73 100,88 130,108')+LN(70,40,128,48);
+        break;
+      default:
+        inner = H(80,40)+LN(80,50,80,90)+LN(60,110,80,90)+LN(100,110,80,90)+LN(60,60,80,70)+LN(100,60,80,70);
+    }
+    return '<svg viewBox="0 0 160 140" width="150" height="130" role="img" aria-label="'+type+' diagram">'+L+inner+'</g></svg>';
+  }
+
+  const EXERCISE_LIBRARY = {
+    'Cat/Cow': {pose:'quadruped', desc:'On hands and knees, alternate between arching your spine up toward the ceiling and letting it sag down toward the floor.', cues:['Move slowly with your breath — round on the exhale, arch on the inhale', 'Let your head follow the movement of your spine', 'Keep hands under shoulders, knees under hips']},
+    'Thread the needle': {pose:'quadruped', desc:'From hands and knees, slide one arm underneath your body and through the gap toward the opposite side, rotating your upper back.', cues:['Let your gaze follow your hand as it threads through', 'Keep the supporting arm stable', 'Return slowly and switch sides']},
+    'World\u2019s greatest stretch': {pose:'kneeling-stretch', desc:'From a deep lunge position, plant both hands inside your front foot, then rotate one arm up toward the ceiling to open your chest.', cues:['Keep the back knee low and stable', 'Rotate from your upper back, not your lower back', 'Hold briefly at the top of each rotation']},
+    'Couch stretch': {pose:'kneeling-stretch', desc:'Kneel with your back foot propped up behind you (against a wall or couch) and your front foot planted forward, then gently sink your hips forward.', cues:['Keep your torso upright, don\u2019t lean forward', 'Squeeze the glute on the stretched side', 'Back off if you feel pinching in the knee']},
+    'Calf stretch, straight knee': {pose:'standing-mobility', desc:'Facing a wall, step one foot back and press the heel down with the back knee kept straight.', cues:['Keep the back foot pointed forward, not turned out', 'Lean from the ankle, not just the hips', 'You should feel this in the upper calf']},
+    'Soleus stretch, bent knee': {pose:'standing-mobility', desc:'Same wall position as the calf stretch, but bend the back knee while keeping the heel down.', cues:['Bend the knee until you feel the stretch lower in the calf, near the Achilles', 'Keep the heel glued to the floor']},
+    'Knee-over-toe ankle stretch': {pose:'kneeling-stretch', desc:'In a half-kneeling or standing position, drive your knee forward over your toes while keeping your heel flat on the ground.', cues:['Go only as far as your heel allows', 'Movement should be smooth and controlled, not bouncy']},
+    'Glute bridge': {pose:'supine', desc:'Lying on your back with knees bent and feet flat, squeeze your glutes to lift your hips off the floor.', cues:['Drive through your heels', 'Squeeze at the top without overarching your lower back', 'Lower with control']},
+    'Bird dog': {pose:'quadruped', desc:'From hands and knees, extend one arm forward and the opposite leg back at the same time, keeping your back flat.', cues:['Move slowly and keep your hips level — don\u2019t let them rotate', 'Brace your core throughout', 'Return to start with control before switching sides']},
+    'Dead bug': {pose:'supine', desc:'Lying on your back with arms up and knees bent at 90°, slowly lower one arm and the opposite leg toward the floor.', cues:['Keep your lower back pressed to the floor the whole time', 'Move slowly — this is about control, not speed', 'Alternate sides']},
+    'Goblet squat': {pose:'squat', desc:'Hold a dumbbell or kettlebell at your chest and squat down between your knees, keeping your torso upright.', cues:['Sit your hips back and down', 'Keep your chest up and elbows brushing your knees at the bottom', 'Drive through your whole foot to stand']},
+    'Romanian deadlift': {pose:'hinge', desc:'Holding a weight in front of your thighs, push your hips back and lower the weight along your legs while keeping a flat back.', cues:['Soft bend in the knees, hinge from the hips', 'Keep the weight close to your legs', 'Feel this in your hamstrings, not your lower back']},
+    'Bench press or DB bench': {pose:'bench-press', desc:'Lying on a bench, lower the bar or dumbbells to chest level, then press back up.', cues:['Keep your shoulder blades pulled together and down', 'Control the weight on the way down', 'Press in a straight line back up']},
+    'Chest supported row': {pose:'row', desc:'Lying face-down on an incline bench, pull the weights up toward your ribs, squeezing your shoulder blades together.', cues:['Lead with your elbows, not your hands', 'Pause briefly at the top', 'Lower under control']},
+    'Farmer carry': {pose:'carry', desc:'Hold a heavy weight in each hand and walk a set distance, keeping your posture tall.', cues:['Shoulders back and down, don\u2019t shrug', 'Take controlled steps', 'Keep your core braced throughout']},
+    'Standing calf raise': {pose:'calf-raise', desc:'Standing tall, rise up onto the balls of your feet, then lower back down with control.', cues:['Get a full stretch at the bottom', 'Pause briefly at the top', 'Avoid bouncing']},
+    'Tibialis raises': {pose:'calf-raise', desc:'The opposite of a calf raise: with heels planted, lift your toes and the front of your foot up as high as you can.', cues:['Keep your heel on the ground the whole time', 'This works the muscle along your shin, not your calf', 'Small range of motion is normal']},
+    'Hip airplanes': {pose:'standing-mobility', desc:'Balancing on one leg with a slight hinge at the hip, rotate your torso and free leg open and closed like a propeller.', cues:['Keep the standing knee soft, not locked', 'Move slowly for control and balance', 'Use a wall for support if needed']},
+    'Clamshells': {pose:'plank-side', desc:'Lying on your side with knees bent and stacked, keep your feet together and open your top knee like a clamshell.', cues:['Keep your hips stacked, don\u2019t roll backward', 'Move only from the hip, not the lower back', 'Squeeze at the top of the movement']},
+    'Side plank': {pose:'plank-side', desc:'Prop yourself up on one forearm with your body in a straight line from head to feet, and hold.', cues:['Stack your hips and shoulders', 'Keep your hips lifted, don\u2019t let them sag', 'Breathe steadily throughout the hold']},
+    'Trap bar deadlift': {pose:'hinge', desc:'Standing inside a trap bar, hinge at the hips and bend your knees to grip the handles, then stand up by driving through your legs.', cues:['Keep the bar close to your body the whole lift', 'Chest up, back flat as you pull', 'Drive your hips forward to finish']},
+    'Bulgarian split squat': {pose:'lunge', desc:'With your rear foot elevated behind you on a bench, lower your back knee toward the floor by bending your front leg.', cues:['Keep most of your weight on the front leg', 'Lower straight down, not forward', 'Push through the front heel to rise']},
+    'Overhead press': {pose:'overhead-press', desc:'Standing with a weight at shoulder height, press it straight overhead until your arms are fully extended.', cues:['Brace your core to avoid arching your lower back', 'Keep the bar path close to your face', 'Finish with your biceps near your ears']},
+    'Lat pulldown': {pose:'pulldown', desc:'Seated at the machine, pull the bar down toward your upper chest, then let it rise back up with control.', cues:['Lead with your elbows, drive them down and back', 'Avoid leaning back excessively', 'Control the weight back up']},
+    'Face pull': {pose:'row', desc:'Using a cable or band at head height, pull the handles toward your face, flaring your elbows out wide.', cues:['Aim the pull toward your eyebrows', 'Squeeze your shoulder blades at the end', 'Keep elbows high throughout']},
+    'Single-leg calf raise': {pose:'calf-raise', desc:'Same as a standing calf raise, but performed on one leg at a time for extra balance and strength demand.', cues:['Hold onto something light for balance if needed', 'Full range of motion each rep', 'Match reps on both sides']},
+    'Pallof press': {pose:'standing-mobility', desc:'Standing side-on to a cable or band anchored at chest height, press the handle straight out in front of you and resist rotating.', cues:['Brace your core to resist being pulled sideways', 'Press straight out, then pull straight back in', 'Keep hips and shoulders square the whole time']},
+    'Deep squat hold': {pose:'squat', desc:'Sink into the bottom of a squat and simply hold the position, using your elbows to gently press your knees outward if needed.', cues:['Keep your heels on the ground', 'Relax into the position rather than fighting it', 'Breathe steadily throughout the hold']},
+    '90/90 hip switches': {pose:'supine', desc:'Sitting on the floor with both knees bent at 90°, rotate your legs from one side to the other while keeping your torso upright.', cues:['Move slowly and with control', 'Keep your chest tall throughout', 'Let your hips do the rotating, not your back']},
+    'Thoracic rotations': {pose:'quadruped', desc:'From hands and knees, place one hand behind your head and rotate your elbow up toward the ceiling, following it with your eyes.', cues:['Rotate from your upper back', 'Keep your hips still and facing forward', 'Move slowly through the full range']},
+    'Ankle mobility': {pose:'kneeling-stretch', desc:'In a half-kneeling position, rock your front knee forward over your toes repeatedly to loosen the ankle joint.', cues:['Keep your heel flat on the ground', 'Small, controlled movements', 'Should feel like a stretch, not a strain']},
+    'Front squat or leg press': {pose:'squat', desc:'With the weight held at the front of your shoulders (or on a leg press machine), squat down and drive back up.', cues:['Keep your torso upright and elbows high', 'Sit down between your knees', 'Drive evenly through both feet']},
+    'Hip thrust': {pose:'supine', desc:'With your upper back braced against a bench and a weight across your hips, drive your hips up until your body forms a straight line.', cues:['Tuck your chin slightly and brace your core', 'Squeeze your glutes hard at the top', 'Lower with control']},
+    'Incline DB press': {pose:'bench-press', desc:'On an inclined bench, press dumbbells up and slightly in from shoulder height until your arms are extended.', cues:['Keep a slight arch in your upper back', 'Control the weight on the way down', 'Don\u2019t let the dumbbells drift too far back']},
+    'Cable row': {pose:'row', desc:'Seated at a cable machine, pull the handle toward your torso, squeezing your shoulder blades together.', cues:['Keep your torso still, avoid rocking', 'Lead with your elbows', 'Pause briefly at full contraction']},
+    'Suitcase carry': {pose:'carry', desc:'Like a farmer carry, but holding the weight in only one hand, resisting the urge to lean toward the loaded side.', cues:['Keep your torso upright and level', 'Brace your core to resist leaning', 'Switch sides evenly']}
+  };
+
   const MOODS = [
     {key:'low', label:'Low'}, {key:'meh', label:'Meh'}, {key:'okay', label:'Okay'},
     {key:'good', label:'Good'}, {key:'great', label:'Great'}
@@ -357,11 +519,12 @@
   const EXERCISE_CHIPS = [10,20,30,45,60];
 
   let current = new Date();
-  let settings = {unit:'lb', waterGoal:8};
+  let settings = {unit:'lb', waterGoal:8, calorieGoal:2000};
   let dayData = defaultDay();
 
   function defaultDay(){
-    return {weight:null, water:0, sleep:null, mood:null, exercise:null, plan:{morning:{}, day:{}, hourly:0}};
+    return {weight:null, water:0, sleep:null, mood:null, exercise:null, plan:{morning:{}, day:{}, hourly:0},
+      meals:{breakfast:[], lunch:[], dinner:[], snacks:[]}};
   }
   function pad(n){return n<10 ? '0'+n : ''+n;}
   function keyFor(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
@@ -402,6 +565,7 @@
       dayData = raw ? JSON.parse(raw) : defaultDay();
     }catch(e){ dayData = defaultDay(); }
     if(!dayData.plan) dayData.plan = {morning:{}, day:{}, hourly:0};
+    if(!dayData.meals) dayData.meals = {breakfast:[], lunch:[], dinner:[], snacks:[]};
   }
   async function saveDay(d){
     lsSet('log:'+keyFor(d), JSON.stringify(dayData));
@@ -520,6 +684,7 @@
     await loadDay(current);
     renderAll();
     if(document.getElementById('planView').classList.contains('active')) renderPlan();
+    if(document.getElementById('mealsView').classList.contains('active')) renderMeals();
   }
 
   document.getElementById('prevDay').addEventListener('click', ()=>{
@@ -557,14 +722,16 @@
   // tabs
   const tabToday = document.getElementById('tabToday');
   const tabPlan = document.getElementById('tabPlan');
+  const tabMeals = document.getElementById('tabMeals');
   const tabTrends = document.getElementById('tabTrends');
   const todayView = document.getElementById('todayView');
   const planView = document.getElementById('planView');
+  const mealsView = document.getElementById('mealsView');
   const trendsView = document.getElementById('trendsView');
   const arcWrap = document.querySelector('.arc-wrap');
   const dateNav = document.querySelector('.date-nav');
-  const allTabs = [tabToday, tabPlan, tabTrends];
-  const allViews = [todayView, planView, trendsView];
+  const allTabs = [tabToday, tabPlan, tabMeals, tabTrends];
+  const allViews = [todayView, planView, mealsView, trendsView];
 
   function activateTab(tab, view){
     allTabs.forEach(t=>t.classList.remove('active'));
@@ -581,6 +748,11 @@
     arcWrap.style.display='none'; dateNav.style.display='';
     renderPlan();
   });
+  tabMeals.addEventListener('click', ()=>{
+    activateTab(tabMeals, mealsView);
+    arcWrap.style.display='none'; dateNav.style.display='';
+    renderMeals();
+  });
   tabTrends.addEventListener('click', ()=>{
     activateTab(tabTrends, trendsView);
     arcWrap.style.display='none'; dateNav.style.display='none';
@@ -595,9 +767,13 @@
     function checklist(items, bucketKey){
       return items.map(it=>{
         const done = !!dayData.plan[bucketKey][it.id];
+        const hasInfo = EXERCISE_LIBRARY.hasOwnProperty(it.name);
         return '<div class="check-item'+(done?' done':'')+'" data-bucket="'+bucketKey+'" data-id="'+it.id+'">'+
+          '<div class="check-item-main">'+
           '<div class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>'+
           '<div class="check-text"><div class="name">'+it.name+'</div>'+(it.sub?'<div class="sub">'+it.sub+'</div>':'')+'</div>'+
+          '</div>'+
+          (hasInfo ? '<button class="info-btn" data-exercise="'+it.name+'" aria-label="How to do '+it.name+'">i</button>' : '')+
         '</div>';
       }).join('');
     }
@@ -633,19 +809,139 @@
 
     document.getElementById('planContent').innerHTML = html;
 
-    document.querySelectorAll('.check-item').forEach(el=>{
+    document.querySelectorAll('.check-item-main').forEach(el=>{
       el.addEventListener('click', ()=>{
-        const bucket = el.getAttribute('data-bucket');
-        const id = el.getAttribute('data-id');
+        const parent = el.closest('.check-item');
+        const bucket = parent.getAttribute('data-bucket');
+        const id = parent.getAttribute('data-id');
         dayData.plan[bucket][id] = !dayData.plan[bucket][id];
         saveDay(current);
         renderPlan();
+      });
+    });
+    document.querySelectorAll('.info-btn').forEach(el=>{
+      el.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        openExerciseModal(el.getAttribute('data-exercise'));
       });
     });
     const hp = document.getElementById('hourlyPlus');
     const hm = document.getElementById('hourlyMinus');
     if(hp) hp.addEventListener('click', ()=>{ dayData.plan.hourly++; saveDay(current); renderPlan(); });
     if(hm) hm.addEventListener('click', ()=>{ dayData.plan.hourly = Math.max(0, dayData.plan.hourly-1); saveDay(current); renderPlan(); });
+  }
+
+  function openExerciseModal(name){
+    const ex = EXERCISE_LIBRARY[name];
+    if(!ex) return;
+    const sheet = document.getElementById('exerciseModalSheet');
+    sheet.innerHTML =
+      '<div class="modal-top"><h3>'+name+'</h3><button class="modal-close" id="modalCloseBtn" aria-label="Close">✕</button></div>'+
+      '<div class="modal-diagram">'+poseSVG(ex.pose)+'</div>'+
+      '<div class="modal-desc">'+ex.desc+'</div>'+
+      '<ul class="cue-list">'+ex.cues.map(c=>'<li>'+c+'</li>').join('')+'</ul>';
+    document.getElementById('exerciseModalOverlay').classList.add('open');
+    document.getElementById('modalCloseBtn').addEventListener('click', closeExerciseModal);
+  }
+  function closeExerciseModal(){
+    document.getElementById('exerciseModalOverlay').classList.remove('open');
+  }
+  document.getElementById('exerciseModalOverlay').addEventListener('click', (e)=>{
+    if(e.target.id === 'exerciseModalOverlay') closeExerciseModal();
+  });
+
+  const MEAL_SECTIONS = [
+    {key:'breakfast', label:'Breakfast'},
+    {key:'lunch', label:'Lunch'},
+    {key:'dinner', label:'Dinner'},
+    {key:'snacks', label:'Snacks'}
+  ];
+
+  function mealTotals(){
+    let kcal = 0, protein = 0;
+    MEAL_SECTIONS.forEach(s=>{
+      (dayData.meals[s.key]||[]).forEach(item=>{
+        kcal += item.kcal || 0;
+        protein += item.protein || 0;
+      });
+    });
+    return {kcal, protein};
+  }
+
+  function renderMeals(){
+    const totals = mealTotals();
+    const goal = settings.calorieGoal || 2000;
+    const pct = Math.max(0, Math.min(100, Math.round((totals.kcal / goal) * 100)));
+
+    let html = '';
+    html += '<div class="card">';
+    html += '<div class="card-top"><div class="card-title"><span class="dot amber"></span><span>Today\u2019s total</span></div>'+
+      '<div class="card-value"><b>'+totals.kcal+'</b> kcal</div></div>';
+    html += '<div class="progress-track"><div class="progress-fill" style="width:'+pct+'%; background:'+(totals.kcal>goal?'var(--rose)':'var(--moss)')+';"></div></div>';
+    html += '<div class="goal-row" style="margin-top:8px;"><span style="font-size:12.5px; color:var(--ink-soft);">Goal</span>'+
+      '<input type="number" id="calorieGoalInput" value="'+goal+'" inputmode="numeric" step="50">'+
+      '<span style="font-size:12.5px; color:var(--ink-soft);">kcal &middot; '+totals.protein+'g protein logged</span></div>';
+    html += '</div>';
+
+    MEAL_SECTIONS.forEach(section=>{
+      const items = dayData.meals[section.key] || [];
+      const secTotal = items.reduce((s,i)=>s+(i.kcal||0),0);
+      html += '<div class="card">';
+      html += '<div class="card-top"><div class="block-heading" style="margin:0;">'+section.label+'</div>'+
+        '<div class="meal-total">'+secTotal+' kcal</div></div>';
+      if(items.length){
+        html += items.map(item=>
+          '<div class="meal-row"><div class="fname">'+item.name+'</div>'+
+          '<div class="fmeta">'+item.kcal+' kcal'+(item.protein?' &middot; '+item.protein+'g':'')+'</div>'+
+          '<button class="meal-del" data-meal="'+section.key+'" data-id="'+item.id+'" aria-label="Remove">✕</button></div>'
+        ).join('');
+      }
+      html += '<div class="add-food-row">'+
+        '<input class="fname-input" type="text" placeholder="Food" id="name-'+section.key+'">'+
+        '<input class="fnum-input" type="number" placeholder="kcal" inputmode="numeric" id="kcal-'+section.key+'">'+
+        '<input class="fnum-input" type="number" placeholder="protein g" inputmode="numeric" id="protein-'+section.key+'">'+
+      '</div>';
+      html += '<button class="add-food-btn" data-meal="'+section.key+'" style="width:100%; margin-top:8px;">Add to '+section.label.toLowerCase()+'</button>';
+      html += '</div>';
+    });
+
+    document.getElementById('mealsContent').innerHTML = html;
+
+    document.getElementById('calorieGoalInput').addEventListener('change', (e)=>{
+      const v = parseInt(e.target.value, 10);
+      settings.calorieGoal = isNaN(v) ? 2000 : v;
+      saveSettings();
+      renderMeals();
+    });
+
+    document.querySelectorAll('.meal-del').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const meal = btn.getAttribute('data-meal');
+        const id = btn.getAttribute('data-id');
+        dayData.meals[meal] = dayData.meals[meal].filter(i=>i.id!==id);
+        saveDay(current);
+        renderMeals();
+      });
+    });
+
+    document.querySelectorAll('.add-food-btn').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const meal = btn.getAttribute('data-meal');
+        const nameEl = document.getElementById('name-'+meal);
+        const kcalEl = document.getElementById('kcal-'+meal);
+        const proteinEl = document.getElementById('protein-'+meal);
+        const name = nameEl.value.trim();
+        const kcal = parseInt(kcalEl.value, 10);
+        const protein = parseInt(proteinEl.value, 10);
+        if(!name || isNaN(kcal)) return;
+        dayData.meals[meal].push({
+          id: Date.now().toString(36) + Math.random().toString(36).slice(2,6),
+          name, kcal, protein: isNaN(protein) ? 0 : protein
+        });
+        saveDay(current);
+        renderMeals();
+      });
+    });
   }
 
   async function renderTrends(){
