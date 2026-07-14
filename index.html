@@ -235,6 +235,22 @@
     padding:8px 14px; font-size:13px; font-weight:500; flex-shrink:0;
   }
   .meal-total{font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--ink-soft);}
+
+  /* exercise diagram animation */
+  .pose-move{ transform-box: fill-box; transform-origin: 50% 100%; }
+  .anim-bob{ animation: figBob 1.7s ease-in-out infinite; }
+  @keyframes figBob{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(10px);} }
+  .anim-rise{ animation: figRise 1.6s ease-in-out infinite; }
+  @keyframes figRise{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);} }
+  .anim-sway{ animation: figSway 2s ease-in-out infinite; }
+  @keyframes figSway{ 0%,100%{transform:translateX(0);} 50%{transform:translateX(7px);} }
+  .anim-tilt{ animation: figTilt 2.1s ease-in-out infinite; }
+  @keyframes figTilt{ 0%,100%{transform:translate(0,0);} 50%{transform:translate(-4px,5px);} }
+  .anim-pulse{ animation: figPulse 2.4s ease-in-out infinite; }
+  @keyframes figPulse{ 0%,100%{transform:scale(1);} 50%{transform:scale(1.025);} }
+  @media (prefers-reduced-motion: reduce){
+    .pose-move{ animation: none !important; }
+  }
 </style>
 </head>
 <body>
@@ -416,69 +432,82 @@
     ]}
   ];
 
-  function poseSVG(type){
+  function poseSVG(type, holdOnly){
     const L = '<g fill="none" stroke="var(--ink)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">';
     const H = (cx,cy)=>'<circle cx="'+cx+'" cy="'+cy+'" r="10" fill="var(--card)" stroke="var(--ink)" stroke-width="5"/>';
     const P = (pts)=>'<polyline points="'+pts+'"/>';
     const LN = (a,b,c,d)=>'<line x1="'+a+'" y1="'+b+'" x2="'+c+'" y2="'+d+'"/>';
     const W = (cx,cy)=>'<circle cx="'+cx+'" cy="'+cy+'" r="7" fill="var(--amber)" stroke="none"/>';
-    let inner = '';
+    let move = '', still = '';
+    const ANIM = {
+      'squat':'anim-bob', 'hinge':'anim-tilt', 'lunge':'anim-bob',
+      'overhead-press':'anim-rise', 'bench-press':'anim-rise', 'row':'anim-sway',
+      'pulldown':'anim-bob', 'carry':'anim-sway', 'calf-raise':'anim-rise',
+      'plank-side':'anim-pulse', 'quadruped':'anim-rise', 'supine':'anim-rise',
+      'kneeling-stretch':'anim-pulse', 'standing-mobility':'anim-sway'
+    };
     switch(type){
       case 'squat':
-        inner = H(80,28)+LN(80,38,78,78)+P('78,78 55,95 60,125')+P('78,78 100,95 96,125')+P('80,48 62,62 72,80')+P('80,48 98,62 88,80')+W(80,82);
+        move = H(80,28)+LN(80,38,78,78)+P('78,78 55,95 60,125')+P('78,78 100,95 96,125')+P('80,48 62,62 72,80')+P('80,48 98,62 88,80')+W(80,82);
         break;
       case 'hinge':
-        inner = H(58,32)+LN(55,45,90,80)+P('90,80 88,105 90,128')+P('55,45 52,70 50,95')+LN(30,95,70,95)+'<circle cx="30" cy="95" r="6" fill="var(--amber)" stroke="none"/><circle cx="70" cy="95" r="6" fill="var(--amber)" stroke="none"/>';
+        move = H(58,32)+LN(55,45,90,80)+P('90,80 88,105 90,128')+P('55,45 52,70 50,95')+LN(30,95,70,95)+'<circle cx="30" cy="95" r="6" fill="var(--amber)" stroke="none"/><circle cx="70" cy="95" r="6" fill="var(--amber)" stroke="none"/>';
         break;
       case 'lunge':
-        inner = H(75,26)+LN(75,36,73,75)+P('73,75 55,95 60,120')+P('73,75 95,100 110,118')+P('75,45 65,60 70,75')+P('75,45 85,60 80,75');
+        move = H(75,26)+LN(75,36,73,75)+P('73,75 55,95 60,120')+P('73,75 95,100 110,118')+P('75,45 65,60 70,75')+P('75,45 85,60 80,75');
         break;
       case 'overhead-press':
-        inner = H(80,30)+LN(80,40,78,80)+P('78,80 70,105 68,128')+P('78,80 86,105 88,128')+P('80,42 65,20 60,5')+P('80,42 95,20 100,5')+LN(60,5,100,5);
+        move = H(80,30)+LN(80,40,78,80)+P('78,80 70,105 68,128')+P('78,80 86,105 88,128')+P('80,42 65,20 60,5')+P('80,42 95,20 100,5')+LN(60,5,100,5);
         break;
       case 'bench-press':
-        inner = H(20,70)+LN(30,70,90,70)+P('90,70 100,90 90,110')+LN(15,80,100,80)+LN(55,68,55,35)+LN(40,35,70,35)+'<circle cx="40" cy="35" r="6" fill="var(--amber)" stroke="none"/><circle cx="70" cy="35" r="6" fill="var(--amber)" stroke="none"/>';
+        still = LN(15,80,100,80);
+        move = H(20,70)+LN(30,70,90,70)+P('90,70 100,90 90,110')+LN(55,68,55,35)+LN(40,35,70,35)+'<circle cx="40" cy="35" r="6" fill="var(--amber)" stroke="none"/><circle cx="70" cy="35" r="6" fill="var(--amber)" stroke="none"/>';
         break;
       case 'row':
-        inner = H(58,32)+LN(55,45,90,80)+P('90,80 88,105 90,128')+P('55,45 70,55 85,50')+'<line x1="85" y1="50" x2="122" y2="60" stroke-dasharray="3,5" stroke="var(--moss)" stroke-width="3"/><circle cx="122" cy="60" r="4" fill="var(--moss)" stroke="none"/>';
+        still = '<circle cx="122" cy="60" r="4" fill="var(--moss)" stroke="none"/>';
+        move = H(58,32)+LN(55,45,90,80)+P('90,80 88,105 90,128')+P('55,45 70,55 85,50')+'<line x1="85" y1="50" x2="122" y2="60" stroke-dasharray="3,5" stroke="var(--moss)" stroke-width="3"/>';
         break;
       case 'pulldown':
-        inner = H(80,25)+LN(80,34,78,75)+P('78,75 60,85 55,100')+P('78,75 95,88 100,102')+P('80,40 55,45 40,55')+P('80,40 105,45 120,55')+LN(40,45,120,45)+'<line x1="80" y1="45" x2="80" y2="10" stroke-dasharray="3,5" stroke="var(--moss)" stroke-width="3"/>';
+        still = '<line x1="80" y1="18" x2="80" y2="10" stroke-dasharray="3,5" stroke="var(--moss)" stroke-width="3"/>';
+        move = H(80,25)+LN(80,34,78,75)+P('78,75 60,85 55,100')+P('78,75 95,88 100,102')+P('80,40 55,45 40,55')+P('80,40 105,45 120,55')+LN(40,45,120,45)+'<line x1="80" y1="45" x2="80" y2="18" stroke-dasharray="3,5" stroke="var(--moss)" stroke-width="3"/>';
         break;
       case 'carry':
-        inner = H(80,28)+LN(80,38,78,78)+P('78,78 65,100 60,125')+P('78,78 92,102 98,120')+LN(80,42,75,85)+LN(80,42,88,85)+W(75,88)+W(88,88);
+        move = H(80,28)+LN(80,38,78,78)+P('78,78 65,100 60,125')+P('78,78 92,102 98,120')+LN(80,42,75,85)+LN(80,42,88,85)+W(75,88)+W(88,88);
         break;
       case 'calf-raise':
-        inner = H(80,28)+LN(80,38,78,80)+P('78,80 75,112 70,124')+P('78,80 85,112 90,124')+LN(65,127,78,124)+LN(82,127,95,124);
+        move = H(80,28)+LN(80,38,78,80)+P('78,80 75,112 70,124')+P('78,80 85,112 90,124')+LN(65,127,78,124)+LN(82,127,95,124);
         break;
       case 'plank-side':
-        inner = H(28,52)+LN(40,58,102,63)+P('40,58 38,80 38,96')+LN(102,63,140,67)+P('45,55 55,42 60,35');
+        move = H(28,52)+LN(40,58,102,63)+P('40,58 38,80 38,96')+LN(102,63,140,67)+P('45,55 55,42 60,35');
         break;
       case 'quadruped':
-        inner = H(107,58)+LN(100,65,65,70)+LN(100,65,110,100)+LN(65,70,60,100)+LN(65,70,35,72);
+        move = H(107,58)+LN(100,65,65,70)+LN(100,65,110,100)+LN(65,70,60,100)+LN(65,70,35,72);
         break;
       case 'supine':
-        inner = H(22,80)+LN(34,80,90,80)+P('90,80 96,55 78,50')+LN(34,80,10,60);
+        move = H(22,80)+LN(34,80,90,80)+P('90,80 96,55 78,50')+LN(34,80,10,60);
         break;
       case 'kneeling-stretch':
-        inner = H(75,24)+LN(75,33,73,68)+P('73,68 55,88 50,108')+P('73,68 95,98 106,113')+LN(75,40,60,73);
+        move = H(75,24)+LN(75,33,73,68)+P('73,68 55,88 50,108')+P('73,68 95,98 106,113')+LN(75,40,60,73);
         break;
       case 'standing-mobility':
-        inner = '<line x1="140" y1="8" x2="140" y2="130" stroke="var(--line)" stroke-width="5"/>'+H(70,26)+LN(70,36,68,73)+P('68,73 60,98 58,123')+P('68,73 100,88 130,108')+LN(70,40,128,48);
+        still = '<line x1="140" y1="8" x2="140" y2="130" stroke="var(--line)" stroke-width="5"/>';
+        move = H(70,26)+LN(70,36,68,73)+P('68,73 60,98 58,123')+P('68,73 100,88 130,108')+LN(70,40,128,48);
         break;
       default:
-        inner = H(80,40)+LN(80,50,80,90)+LN(60,110,80,90)+LN(100,110,80,90)+LN(60,60,80,70)+LN(100,60,80,70);
+        move = H(80,40)+LN(80,50,80,90)+LN(60,110,80,90)+LN(100,110,80,90)+LN(60,60,80,70)+LN(100,60,80,70);
     }
-    return '<svg viewBox="0 0 160 140" width="150" height="130" role="img" aria-label="'+type+' diagram">'+L+inner+'</g></svg>';
+    const animClass = holdOnly ? 'anim-pulse' : (ANIM[type] || 'anim-pulse');
+    return '<svg viewBox="0 0 160 140" width="150" height="130" role="img" aria-label="'+type+' diagram">'+L+still+
+      '<g class="pose-move '+animClass+'">'+move+'</g></g></svg>';
   }
 
   const EXERCISE_LIBRARY = {
     'Cat/Cow': {pose:'quadruped', desc:'On hands and knees, alternate between arching your spine up toward the ceiling and letting it sag down toward the floor.', cues:['Move slowly with your breath — round on the exhale, arch on the inhale', 'Let your head follow the movement of your spine', 'Keep hands under shoulders, knees under hips']},
     'Thread the needle': {pose:'quadruped', desc:'From hands and knees, slide one arm underneath your body and through the gap toward the opposite side, rotating your upper back.', cues:['Let your gaze follow your hand as it threads through', 'Keep the supporting arm stable', 'Return slowly and switch sides']},
     'World\u2019s greatest stretch': {pose:'kneeling-stretch', desc:'From a deep lunge position, plant both hands inside your front foot, then rotate one arm up toward the ceiling to open your chest.', cues:['Keep the back knee low and stable', 'Rotate from your upper back, not your lower back', 'Hold briefly at the top of each rotation']},
-    'Couch stretch': {pose:'kneeling-stretch', desc:'Kneel with your back foot propped up behind you (against a wall or couch) and your front foot planted forward, then gently sink your hips forward.', cues:['Keep your torso upright, don\u2019t lean forward', 'Squeeze the glute on the stretched side', 'Back off if you feel pinching in the knee']},
-    'Calf stretch, straight knee': {pose:'standing-mobility', desc:'Facing a wall, step one foot back and press the heel down with the back knee kept straight.', cues:['Keep the back foot pointed forward, not turned out', 'Lean from the ankle, not just the hips', 'You should feel this in the upper calf']},
-    'Soleus stretch, bent knee': {pose:'standing-mobility', desc:'Same wall position as the calf stretch, but bend the back knee while keeping the heel down.', cues:['Bend the knee until you feel the stretch lower in the calf, near the Achilles', 'Keep the heel glued to the floor']},
+    'Couch stretch': {pose:'kneeling-stretch', hold:true, desc:'Kneel with your back foot propped up behind you (against a wall or couch) and your front foot planted forward, then gently sink your hips forward.', cues:['Keep your torso upright, don\u2019t lean forward', 'Squeeze the glute on the stretched side', 'Back off if you feel pinching in the knee']},
+    'Calf stretch, straight knee': {pose:'standing-mobility', hold:true, desc:'Facing a wall, step one foot back and press the heel down with the back knee kept straight.', cues:['Keep the back foot pointed forward, not turned out', 'Lean from the ankle, not just the hips', 'You should feel this in the upper calf']},
+    'Soleus stretch, bent knee': {pose:'standing-mobility', hold:true, desc:'Same wall position as the calf stretch, but bend the back knee while keeping the heel down.', cues:['Bend the knee until you feel the stretch lower in the calf, near the Achilles', 'Keep the heel glued to the floor']},
     'Knee-over-toe ankle stretch': {pose:'kneeling-stretch', desc:'In a half-kneeling or standing position, drive your knee forward over your toes while keeping your heel flat on the ground.', cues:['Go only as far as your heel allows', 'Movement should be smooth and controlled, not bouncy']},
     'Glute bridge': {pose:'supine', desc:'Lying on your back with knees bent and feet flat, squeeze your glutes to lift your hips off the floor.', cues:['Drive through your heels', 'Squeeze at the top without overarching your lower back', 'Lower with control']},
     'Bird dog': {pose:'quadruped', desc:'From hands and knees, extend one arm forward and the opposite leg back at the same time, keeping your back flat.', cues:['Move slowly and keep your hips level — don\u2019t let them rotate', 'Brace your core throughout', 'Return to start with control before switching sides']},
@@ -492,7 +521,7 @@
     'Tibialis raises': {pose:'calf-raise', desc:'The opposite of a calf raise: with heels planted, lift your toes and the front of your foot up as high as you can.', cues:['Keep your heel on the ground the whole time', 'This works the muscle along your shin, not your calf', 'Small range of motion is normal']},
     'Hip airplanes': {pose:'standing-mobility', desc:'Balancing on one leg with a slight hinge at the hip, rotate your torso and free leg open and closed like a propeller.', cues:['Keep the standing knee soft, not locked', 'Move slowly for control and balance', 'Use a wall for support if needed']},
     'Clamshells': {pose:'plank-side', desc:'Lying on your side with knees bent and stacked, keep your feet together and open your top knee like a clamshell.', cues:['Keep your hips stacked, don\u2019t roll backward', 'Move only from the hip, not the lower back', 'Squeeze at the top of the movement']},
-    'Side plank': {pose:'plank-side', desc:'Prop yourself up on one forearm with your body in a straight line from head to feet, and hold.', cues:['Stack your hips and shoulders', 'Keep your hips lifted, don\u2019t let them sag', 'Breathe steadily throughout the hold']},
+    'Side plank': {pose:'plank-side', hold:true, desc:'Prop yourself up on one forearm with your body in a straight line from head to feet, and hold.', cues:['Stack your hips and shoulders', 'Keep your hips lifted, don\u2019t let them sag', 'Breathe steadily throughout the hold']},
     'Trap bar deadlift': {pose:'hinge', desc:'Standing inside a trap bar, hinge at the hips and bend your knees to grip the handles, then stand up by driving through your legs.', cues:['Keep the bar close to your body the whole lift', 'Chest up, back flat as you pull', 'Drive your hips forward to finish']},
     'Bulgarian split squat': {pose:'lunge', desc:'With your rear foot elevated behind you on a bench, lower your back knee toward the floor by bending your front leg.', cues:['Keep most of your weight on the front leg', 'Lower straight down, not forward', 'Push through the front heel to rise']},
     'Overhead press': {pose:'overhead-press', desc:'Standing with a weight at shoulder height, press it straight overhead until your arms are fully extended.', cues:['Brace your core to avoid arching your lower back', 'Keep the bar path close to your face', 'Finish with your biceps near your ears']},
@@ -500,7 +529,7 @@
     'Face pull': {pose:'row', desc:'Using a cable or band at head height, pull the handles toward your face, flaring your elbows out wide.', cues:['Aim the pull toward your eyebrows', 'Squeeze your shoulder blades at the end', 'Keep elbows high throughout']},
     'Single-leg calf raise': {pose:'calf-raise', desc:'Same as a standing calf raise, but performed on one leg at a time for extra balance and strength demand.', cues:['Hold onto something light for balance if needed', 'Full range of motion each rep', 'Match reps on both sides']},
     'Pallof press': {pose:'standing-mobility', desc:'Standing side-on to a cable or band anchored at chest height, press the handle straight out in front of you and resist rotating.', cues:['Brace your core to resist being pulled sideways', 'Press straight out, then pull straight back in', 'Keep hips and shoulders square the whole time']},
-    'Deep squat hold': {pose:'squat', desc:'Sink into the bottom of a squat and simply hold the position, using your elbows to gently press your knees outward if needed.', cues:['Keep your heels on the ground', 'Relax into the position rather than fighting it', 'Breathe steadily throughout the hold']},
+    'Deep squat hold': {pose:'squat', hold:true, desc:'Sink into the bottom of a squat and simply hold the position, using your elbows to gently press your knees outward if needed.', cues:['Keep your heels on the ground', 'Relax into the position rather than fighting it', 'Breathe steadily throughout the hold']},
     '90/90 hip switches': {pose:'supine', desc:'Sitting on the floor with both knees bent at 90°, rotate your legs from one side to the other while keeping your torso upright.', cues:['Move slowly and with control', 'Keep your chest tall throughout', 'Let your hips do the rotating, not your back']},
     'Thoracic rotations': {pose:'quadruped', desc:'From hands and knees, place one hand behind your head and rotate your elbow up toward the ceiling, following it with your eyes.', cues:['Rotate from your upper back', 'Keep your hips still and facing forward', 'Move slowly through the full range']},
     'Ankle mobility': {pose:'kneeling-stretch', desc:'In a half-kneeling position, rock your front knee forward over your toes repeatedly to loosen the ankle joint.', cues:['Keep your heel flat on the ground', 'Small, controlled movements', 'Should feel like a stretch, not a strain']},
@@ -837,7 +866,7 @@
     const sheet = document.getElementById('exerciseModalSheet');
     sheet.innerHTML =
       '<div class="modal-top"><h3>'+name+'</h3><button class="modal-close" id="modalCloseBtn" aria-label="Close">✕</button></div>'+
-      '<div class="modal-diagram">'+poseSVG(ex.pose)+'</div>'+
+      '<div class="modal-diagram">'+poseSVG(ex.pose, ex.hold)+'</div>'+
       '<div class="modal-desc">'+ex.desc+'</div>'+
       '<ul class="cue-list">'+ex.cues.map(c=>'<li>'+c+'</li>').join('')+'</ul>';
     document.getElementById('exerciseModalOverlay').classList.add('open');
