@@ -214,6 +214,11 @@
   }
   .cue-list li:before{content:'—'; position:absolute; left:0; color:var(--moss);}
 
+  @media (min-width: 480px){
+    .modal-overlay{ align-items:center; }
+    .modal-sheet{ border-radius:20px; max-height:80vh; }
+  }
+
   /* meals */
   .goal-row{display:flex; align-items:center; gap:8px; margin-bottom:4px;}
   .goal-row input{width:80px;}
@@ -613,23 +618,49 @@
     return n;
   }
 
-  function renderArc(){
-    const n = completion(), total = 5;
-    const frac = n/total;
+  function drawArc(n, total){
+    const frac = total>0 ? n/total : 0;
     const cx=110, cy=100, r=84;
     const start = {x:cx-r, y:cy};
     const end = {x:cx+r, y:cy};
     const circumference = Math.PI*r;
-    const colors = ['#DDE2D6','#DDE2D6','#DDE2D6','#DDE2D6','#DDE2D6'];
-    const fillColor = frac >= 1 ? 'var(--moss)' : 'var(--amber)';
     const svg = document.getElementById('arcSvg');
     svg.innerHTML =
       '<path d="M '+start.x+' '+start.y+' A '+r+' '+r+' 0 0 1 '+end.x+' '+end.y+'" fill="none" stroke="#E3E7DC" stroke-width="14" stroke-linecap="round"/>' +
       '<path d="M '+start.x+' '+start.y+' A '+r+' '+r+' 0 0 1 '+end.x+' '+end.y+'" fill="none" stroke="'+ (frac>=1?'#3F6D53':'#C98A3C') +'" stroke-width="14" stroke-linecap="round" stroke-dasharray="'+circumference+'" stroke-dashoffset="'+(circumference*(1-frac))+'" style="transition:stroke-dashoffset 0.4s ease"/>' +
       '<text x="110" y="80" text-anchor="middle" font-family="Fraunces, serif" font-size="30" font-weight="500" fill="#1E2A22">'+n+'<tspan font-size="16" fill="#5B6B5F">/'+total+'</tspan></text>';
+  }
+
+  function renderTodayArc(){
+    const n = completion(), total = 5;
+    drawArc(n, total);
     const caption = document.getElementById('arcCaption');
     if(n===total) caption.innerHTML = '<b>All five</b> logged — nicely done';
     else if(n>0) caption.innerHTML = '<b>'+n+'</b> of 5 habits logged';
+    else caption.innerHTML = '';
+  }
+
+  function renderExerciseArc(){
+    const dow = current.getDay();
+    const day = WEEKLY_EXERCISE[dow];
+    const morningDone = MORNING_ROUTINE.filter(i=>dayData.exercise.morning[i.id]).length;
+    const dayDone = day.items.filter(i=>dayData.exercise.day[i.id]).length;
+    const n = morningDone + dayDone;
+    const total = MORNING_ROUTINE.length + day.items.length;
+    drawArc(n, total);
+    const caption = document.getElementById('arcCaption');
+    if(total>0 && n===total) caption.innerHTML = '<b>All done</b> — nice work';
+    else if(n>0) caption.innerHTML = '<b>'+n+'</b> of '+total+' exercises done';
+    else caption.innerHTML = '';
+  }
+
+  function renderMealsArc(){
+    const logged = MEAL_SECTIONS.filter(s => (dayData.meals[s.key]||[]).length>0).length;
+    const total = MEAL_SECTIONS.length;
+    drawArc(logged, total);
+    const caption = document.getElementById('arcCaption');
+    if(logged===total) caption.innerHTML = '<b>All meals</b> logged';
+    else if(logged>0) caption.innerHTML = '<b>'+logged+'</b> of '+total+' meals logged';
     else caption.innerHTML = '';
   }
 
@@ -703,7 +734,7 @@
   }
 
   function renderAll(){
-    renderHeader(); renderArc(); renderWeight(); renderWater(); renderSleep(); renderMood(); renderMovement();
+    renderHeader(); renderTodayArc(); renderWeight(); renderWater(); renderSleep(); renderMood(); renderMovement();
   }
 
   async function persistAndRerender(){
@@ -774,15 +805,16 @@
   tabToday.addEventListener('click', ()=>{
     activateTab(tabToday, todayView);
     arcWrap.style.display=''; dateNav.style.display='';
+    renderTodayArc();
   });
   tabExercise.addEventListener('click', ()=>{
     activateTab(tabExercise, exerciseView);
-    arcWrap.style.display='none'; dateNav.style.display='';
+    arcWrap.style.display=''; dateNav.style.display='';
     renderExercise();
   });
   tabMeals.addEventListener('click', ()=>{
     activateTab(tabMeals, mealsView);
-    arcWrap.style.display='none'; dateNav.style.display='';
+    arcWrap.style.display=''; dateNav.style.display='';
     renderMeals();
   });
   tabTrends.addEventListener('click', ()=>{
@@ -814,8 +846,8 @@
     const dayDone = day.items.filter(i=>dayData.exercise.day[i.id]).length;
 
     let html = '';
-    html += '<div class="exercise-head"><h3>'+labelFor(current)+'</h3></div>';
-    html += '<div class="exercise-sub">'+day.title+(day.note ? ' \u2014 '+day.note : '')+'</div>';
+    html += '<div class="exercise-head"><h3>'+day.title+'</h3></div>';
+    if(day.note) html += '<div class="exercise-sub">'+day.note+'</div>';
 
     html += '<div class="card"><div class="block-heading">Morning mobility</div>';
     html += '<div class="exercise-progress"><b>'+morningDone+'</b> / '+MORNING_ROUTINE.length+' done</div>';
@@ -840,6 +872,7 @@
     html += '<div class="why-note">Extra attention on calves, ankles, and glutes throughout \u2014 that\u2019s where a little consistent work tends to pay off most for hip, back, and ankle comfort.</div>';
 
     document.getElementById('exerciseContent').innerHTML = html;
+    renderExerciseArc();
 
     document.querySelectorAll('.check-item-main').forEach(el=>{
       el.addEventListener('click', ()=>{
@@ -941,6 +974,7 @@
     });
 
     document.getElementById('mealsContent').innerHTML = html;
+    renderMealsArc();
 
     document.getElementById('calorieGoalInput').addEventListener('change', (e)=>{
       const v = parseInt(e.target.value, 10);
