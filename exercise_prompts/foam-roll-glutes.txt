@@ -1,0 +1,34 @@
+Create a minimalist fitness instruction image for the exercise "Foam Roll Glutes".
+
+Style:
+- White background
+- No borders, boxes, tables, icons, logos, muscle diagrams, or paragraphs (one motion arrow is allowed, see Requirements)
+- Modern flat vector illustration with realistic anatomy
+- High contrast
+- Consistent lighting
+- Clean instructional style similar to IKEA assembly instructions
+- Athlete is fully clothed in athletic shorts and a plain t-shirt
+
+Layout:
+- A single static illustration — one image only, no sequence of frames, no numbering
+- One athlete seated upright on the floor on top of a foam roller, positioned under the side of the lower back/hip area, both knees bent, feet flat on the floor, hands resting flat on the floor behind for support
+- Plenty of white space around the figure
+
+Scene:
+- The foam roller is drawn under the side of the athlete's lower back, at hip level
+- One long curved double-headed arrow is drawn alongside the body, tracing a short vertical path from the hip down to the top of the back of the thigh
+- The word "Hip" is labeled at the top end of the arrow, and "Thigh" is labeled at the bottom end of the arrow
+
+Text:
+- Large title at the top: "Foam Roll Glutes"
+- Small labels only: "Hip" and "Thigh" placed at the two ends of the arrow
+- No additional text
+- No coaching cues
+- No sets or reps
+- No muscle diagrams
+
+Requirements:
+- Exactly one static pose — do not repeat the figure or draw a sequence
+- Exactly one curved double-headed arrow indicating the rolling path
+- A modest, fully-clothed, family-friendly fitness illustration suitable for a general audience
+- Exercise form must be biomechanically correct

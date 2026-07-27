@@ -1,0 +1,40 @@
+Create a minimalist fitness instruction image for the exercise "World's Greatest Stretch".
+
+Style:
+- White background
+- No borders, boxes, tables, icons, logos, muscle diagrams, or paragraphs
+- Modern flat vector illustration with realistic anatomy
+- High contrast
+- Consistent lighting
+- Clean instructional style similar to IKEA assembly instructions
+
+Layout:
+- Horizontal image
+- Five equally spaced illustrations showing one athlete performing the movement from left to right
+- Number each frame 1–5
+- No duplicate poses
+- Clearly show the entire range of motion
+- Plenty of white space between poses
+
+Frames:
+1. Starting position, deep lunge with the RIGHT foot forward and the LEFT leg extended straight back, both hands planted on the floor inside the right foot
+2. Lifting the RIGHT hand off the floor and beginning to rotate it upward, left hand still planted on the floor, lunge stance unchanged
+3. Full rotation, right arm reaching straight up toward the ceiling, torso rotated open, chest facing sideways, left hand still planted on the floor, lunge stance unchanged
+4. Rotating the right arm back down toward the floor, lunge stance unchanged
+5. Return to starting position, both hands planted on the floor inside the right foot, same lunge stance as frame 1
+
+Text:
+- Large title at the top: "World's Greatest Stretch"
+- Small labels only: Start, Rotate, Open, Return, Lunge
+- No additional text
+- No coaching cues
+- No sets or reps
+- No muscle diagrams
+
+Requirements:
+- Same athlete in every frame
+- Same camera angle
+- Same forward leg (right leg) and same rotating arm (right arm) in every single frame — the lunge stance and grounded hand never switch sides or change between frames
+- Athlete stays balanced and stable in the lunge in every frame, never off-balance or falling
+- Motion should read left-to-right like animation keyframes
+- Exercise form must be biomechanically correct

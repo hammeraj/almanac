@@ -1,0 +1,40 @@
+Create a minimalist fitness instruction image for the exercise "Knee-Over-Toe Ankle Stretch".
+
+Style:
+- White background
+- No borders, boxes, tables, icons, logos, muscle diagrams, or paragraphs
+- Modern flat vector illustration with realistic anatomy
+- High contrast
+- Consistent lighting
+- Clean instructional style similar to IKEA assembly instructions
+
+Layout:
+- Horizontal image
+- Five equally spaced illustrations showing one athlete performing the movement from left to right
+- Number each frame 1–5
+- No duplicate poses
+- Clearly show the entire range of motion
+- Plenty of white space between poses
+
+Frames:
+1. Standing tall with the RIGHT foot forward and the LEFT foot back in a long standing stance, both heels flat on the floor
+2. Driving the right knee forward slightly over the toes, back leg staying straight and long
+3. Right knee driven halfway forward over the toes
+4. Right knee driven as far forward over the toes as possible, right heel still flat on the floor, back leg straight and long behind
+5. Returning the right knee back to the starting position
+
+Text:
+- Large title at the top: "Knee-Over-Toe Ankle Stretch"
+- Small labels only: Start, Forward, Halfway, Full Stretch, Return
+- No additional text
+- No coaching cues
+- No sets or reps
+- No muscle diagrams
+
+Requirements:
+- Same athlete in every frame
+- Same camera angle, side view of a standing split stance
+- Same front leg (right leg) forward in every frame — the legs never switch positions between frames
+- The front heel never lifts off the floor in any frame
+- Motion should read left-to-right like animation keyframes
+- Exercise form must be biomechanically correct

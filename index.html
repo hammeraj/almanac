@@ -156,9 +156,9 @@
   .view{display:none;}
   .view.active{display:block;}
 
-  /* plan */
-  .plan-head{display:flex; align-items:baseline; justify-content:space-between; margin-bottom:2px;}
-  .plan-sub{font-size:12.5px; color:var(--ink-soft); margin-bottom:16px;}
+  /* exercise tab */
+  .exercise-head{display:flex; align-items:baseline; justify-content:space-between; margin-bottom:2px;}
+  .exercise-sub{font-size:12.5px; color:var(--ink-soft); margin-bottom:16px;}
   .block-heading{font-size:12px; font-family:'IBM Plex Mono',monospace; letter-spacing:0.04em; text-transform:uppercase; color:var(--ink-soft); margin:0 0 9px;}
   .check-item{
     display:flex; align-items:flex-start; gap:11px; padding:9px 0; border-bottom:1px solid var(--line);
@@ -175,8 +175,8 @@
   .check-text .name{font-size:14px; color:var(--ink);}
   .check-item.done .check-text .name{color:var(--ink-soft); text-decoration:line-through;}
   .check-text .sub{font-size:12px; color:var(--ink-soft); margin-top:1px;}
-  .plan-progress{font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--ink-soft); margin-bottom:14px;}
-  .plan-progress b{color:var(--ink);}
+  .exercise-progress{font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--ink-soft); margin-bottom:14px;}
+  .exercise-progress b{color:var(--ink);}
   .hourly-row{display:flex; align-items:center; gap:14px;}
   .hourly-count{font-family:'Fraunces',serif; font-size:26px; min-width:34px; text-align:center;}
   .single-note{font-size:13.5px; color:var(--ink); line-height:1.6; background:var(--paper); border-radius:10px; padding:12px 14px;}
@@ -319,17 +319,17 @@
     <div class="card">
       <div class="card-top">
         <div class="card-title"><span class="dot amber"></span><span>Movement</span></div>
-        <div class="card-value" id="exerciseVal">— <span style="color:var(--ink-soft)">min</span></div>
+        <div class="card-value" id="movementVal">— <span style="color:var(--ink-soft)">min</span></div>
       </div>
-      <input class="num-input" id="exerciseInput" type="number" inputmode="numeric" step="5" placeholder="minutes">
-      <div class="chips" id="exerciseChips"></div>
+      <input class="num-input" id="movementInput" type="number" inputmode="numeric" step="5" placeholder="minutes">
+      <div class="chips" id="movementChips"></div>
     </div>
 
     <div class="note">Entries save automatically and stay on this device.</div>
   </div>
 
-  <div id="planView" class="view">
-    <div id="planContent"></div>
+  <div id="exerciseView" class="view">
+    <div id="exerciseContent"></div>
   </div>
 
   <div id="mealsView" class="view">
@@ -349,7 +349,7 @@
 <div class="tabbar">
   <div class="tabbar-inner">
     <div class="tab active" id="tabToday">Today</div>
-    <div class="tab" id="tabPlan">Plan</div>
+    <div class="tab" id="tabExercise">Exercise</div>
     <div class="tab" id="tabMeals">Meals</div>
     <div class="tab" id="tabTrends">Trends</div>
   </div>
@@ -370,7 +370,7 @@
     {id:'m9', name:'Dead bug', sub:'×10/side'}
   ];
   // index 0 = Sunday .. 6 = Saturday
-  const WEEKLY_PLAN = [
+  const WEEKLY_EXERCISE = [
     { title:'Recovery', note:'Recovery only \u2014 long mobility session, foam rolling, stretch, relax.', items:[
       {id:'d0', name:'Long mobility session'},
       {id:'d1', name:'Foam rolling'},
@@ -548,14 +548,14 @@
     {key:'good', label:'Good'}, {key:'great', label:'Great'}
   ];
   const SLEEP_CHIPS = [6,7,7.5,8,9];
-  const EXERCISE_CHIPS = [10,20,30,45,60];
+  const MOVEMENT_CHIPS = [10,20,30,45,60];
 
   let current = new Date();
   let settings = {unit:'lb', waterGoal:8, calorieGoal:2000};
   let dayData = defaultDay();
 
   function defaultDay(){
-    return {weight:null, water:0, sleep:null, mood:null, exercise:null, plan:{morning:{}, day:{}, hourly:0},
+    return {weight:null, water:0, sleep:null, mood:null, movement:null, exercise:{morning:{}, day:{}, hourly:0},
       meals:{breakfast:[], lunch:[], dinner:[], snacks:[]}};
   }
   function pad(n){return n<10 ? '0'+n : ''+n;}
@@ -596,7 +596,7 @@
     try{
       dayData = raw ? JSON.parse(raw) : defaultDay();
     }catch(e){ dayData = defaultDay(); }
-    if(!dayData.plan) dayData.plan = {morning:{}, day:{}, hourly:0};
+    if(!dayData.exercise) dayData.exercise = {morning:{}, day:{}, hourly:0};
     if(!dayData.meals) dayData.meals = {breakfast:[], lunch:[], dinner:[], snacks:[]};
   }
   async function saveDay(d){
@@ -609,7 +609,7 @@
     if(dayData.water > 0) n++;
     if(dayData.sleep) n++;
     if(dayData.mood) n++;
-    if(dayData.exercise) n++;
+    if(dayData.movement) n++;
     return n;
   }
 
@@ -688,22 +688,22 @@
     });
   }
 
-  function renderExercise(){
-    document.getElementById('exerciseInput').value = dayData.exercise ?? '';
-    document.getElementById('exerciseVal').innerHTML = (dayData.exercise ?? '—') + ' <span style="color:var(--ink-soft)">min</span>';
-    const wrap = document.getElementById('exerciseChips');
+  function renderMovement(){
+    document.getElementById('movementInput').value = dayData.movement ?? '';
+    document.getElementById('movementVal').innerHTML = (dayData.movement ?? '—') + ' <span style="color:var(--ink-soft)">min</span>';
+    const wrap = document.getElementById('movementChips');
     wrap.innerHTML = '';
-    EXERCISE_CHIPS.forEach(v=>{
+    MOVEMENT_CHIPS.forEach(v=>{
       const c = document.createElement('div');
-      c.className = 'chip' + (dayData.exercise===v ? ' active':'');
+      c.className = 'chip' + (dayData.movement===v ? ' active':'');
       c.textContent = v+' min';
-      c.addEventListener('click', ()=>{ dayData.exercise = v; persistAndRerender(); });
+      c.addEventListener('click', ()=>{ dayData.movement = v; persistAndRerender(); });
       wrap.appendChild(c);
     });
   }
 
   function renderAll(){
-    renderHeader(); renderArc(); renderWeight(); renderWater(); renderSleep(); renderMood(); renderExercise();
+    renderHeader(); renderArc(); renderWeight(); renderWater(); renderSleep(); renderMood(); renderMovement();
   }
 
   async function persistAndRerender(){
@@ -715,7 +715,7 @@
     current = d;
     await loadDay(current);
     renderAll();
-    if(document.getElementById('planView').classList.contains('active')) renderPlan();
+    if(document.getElementById('exerciseView').classList.contains('active')) renderExercise();
     if(document.getElementById('mealsView').classList.contains('active')) renderMeals();
   }
 
@@ -737,9 +737,9 @@
     dayData.sleep = isNaN(v) ? null : v;
     persistAndRerender();
   });
-  document.getElementById('exerciseInput').addEventListener('change', (e)=>{
+  document.getElementById('movementInput').addEventListener('change', (e)=>{
     const v = parseFloat(e.target.value);
-    dayData.exercise = isNaN(v) ? null : v;
+    dayData.movement = isNaN(v) ? null : v;
     persistAndRerender();
   });
   document.getElementById('waterMinus').addEventListener('click', ()=>{
@@ -753,17 +753,17 @@
 
   // tabs
   const tabToday = document.getElementById('tabToday');
-  const tabPlan = document.getElementById('tabPlan');
+  const tabExercise = document.getElementById('tabExercise');
   const tabMeals = document.getElementById('tabMeals');
   const tabTrends = document.getElementById('tabTrends');
   const todayView = document.getElementById('todayView');
-  const planView = document.getElementById('planView');
+  const exerciseView = document.getElementById('exerciseView');
   const mealsView = document.getElementById('mealsView');
   const trendsView = document.getElementById('trendsView');
   const arcWrap = document.querySelector('.arc-wrap');
   const dateNav = document.querySelector('.date-nav');
-  const allTabs = [tabToday, tabPlan, tabMeals, tabTrends];
-  const allViews = [todayView, planView, mealsView, trendsView];
+  const allTabs = [tabToday, tabExercise, tabMeals, tabTrends];
+  const allViews = [todayView, exerciseView, mealsView, trendsView];
 
   function activateTab(tab, view){
     allTabs.forEach(t=>t.classList.remove('active'));
@@ -775,10 +775,10 @@
     activateTab(tabToday, todayView);
     arcWrap.style.display=''; dateNav.style.display='';
   });
-  tabPlan.addEventListener('click', ()=>{
-    activateTab(tabPlan, planView);
+  tabExercise.addEventListener('click', ()=>{
+    activateTab(tabExercise, exerciseView);
     arcWrap.style.display='none'; dateNav.style.display='';
-    renderPlan();
+    renderExercise();
   });
   tabMeals.addEventListener('click', ()=>{
     activateTab(tabMeals, mealsView);
@@ -791,14 +791,14 @@
     renderTrends();
   });
 
-  function renderPlan(){
+  function renderExercise(){
     const dow = current.getDay();
-    const day = WEEKLY_PLAN[dow];
+    const day = WEEKLY_EXERCISE[dow];
     const isWorkday = dow>=1 && dow<=5;
 
     function checklist(items, bucketKey){
       return items.map(it=>{
-        const done = !!dayData.plan[bucketKey][it.id];
+        const done = !!dayData.exercise[bucketKey][it.id];
         const hasInfo = EXERCISE_LIBRARY.hasOwnProperty(it.name);
         return '<div class="check-item'+(done?' done':'')+'" data-bucket="'+bucketKey+'" data-id="'+it.id+'">'+
           '<div class="check-item-main">'+
@@ -810,20 +810,20 @@
       }).join('');
     }
 
-    const morningDone = MORNING_ROUTINE.filter(i=>dayData.plan.morning[i.id]).length;
-    const dayDone = day.items.filter(i=>dayData.plan.day[i.id]).length;
+    const morningDone = MORNING_ROUTINE.filter(i=>dayData.exercise.morning[i.id]).length;
+    const dayDone = day.items.filter(i=>dayData.exercise.day[i.id]).length;
 
     let html = '';
-    html += '<div class="plan-head"><h3>'+labelFor(current)+'</h3></div>';
-    html += '<div class="plan-sub">'+day.title+(day.note ? ' \u2014 '+day.note : '')+'</div>';
+    html += '<div class="exercise-head"><h3>'+labelFor(current)+'</h3></div>';
+    html += '<div class="exercise-sub">'+day.title+(day.note ? ' \u2014 '+day.note : '')+'</div>';
 
     html += '<div class="card"><div class="block-heading">Morning mobility</div>';
-    html += '<div class="plan-progress"><b>'+morningDone+'</b> / '+MORNING_ROUTINE.length+' done</div>';
+    html += '<div class="exercise-progress"><b>'+morningDone+'</b> / '+MORNING_ROUTINE.length+' done</div>';
     html += checklist(MORNING_ROUTINE, 'morning');
     html += '</div>';
 
     html += '<div class="card"><div class="block-heading">'+day.title+'</div>';
-    html += '<div class="plan-progress"><b>'+dayDone+'</b> / '+day.items.length+' done</div>';
+    html += '<div class="exercise-progress"><b>'+dayDone+'</b> / '+day.items.length+' done</div>';
     html += checklist(day.items, 'day');
     html += '</div>';
 
@@ -831,7 +831,7 @@
       html += '<div class="card"><div class="block-heading">Hourly reset</div>';
       html += '<div class="single-note" style="margin-bottom:12px;">Every hour: stand up, walk 2 min, 10 bodyweight squats, 10 calf raises.</div>';
       html += '<div class="hourly-row"><button class="stepper-btn" id="hourlyMinus" style="width:36px;height:36px;border-radius:10px;border:1px solid var(--line);background:var(--paper);font-size:17px;">−</button>'+
-        '<div class="hourly-count">'+dayData.plan.hourly+'</div>'+
+        '<div class="hourly-count">'+dayData.exercise.hourly+'</div>'+
         '<button id="hourlyPlus" style="width:36px;height:36px;border-radius:10px;border:1px solid var(--line);background:var(--paper);font-size:17px;">+</button>'+
         '<span style="font-size:12.5px; color:var(--ink-soft);">times today</span></div>';
       html += '</div>';
@@ -839,16 +839,16 @@
 
     html += '<div class="why-note">Extra attention on calves, ankles, and glutes throughout \u2014 that\u2019s where a little consistent work tends to pay off most for hip, back, and ankle comfort.</div>';
 
-    document.getElementById('planContent').innerHTML = html;
+    document.getElementById('exerciseContent').innerHTML = html;
 
     document.querySelectorAll('.check-item-main').forEach(el=>{
       el.addEventListener('click', ()=>{
         const parent = el.closest('.check-item');
         const bucket = parent.getAttribute('data-bucket');
         const id = parent.getAttribute('data-id');
-        dayData.plan[bucket][id] = !dayData.plan[bucket][id];
+        dayData.exercise[bucket][id] = !dayData.exercise[bucket][id];
         saveDay(current);
-        renderPlan();
+        renderExercise();
       });
     });
     document.querySelectorAll('.info-btn').forEach(el=>{
@@ -859,8 +859,8 @@
     });
     const hp = document.getElementById('hourlyPlus');
     const hm = document.getElementById('hourlyMinus');
-    if(hp) hp.addEventListener('click', ()=>{ dayData.plan.hourly++; saveDay(current); renderPlan(); });
-    if(hm) hm.addEventListener('click', ()=>{ dayData.plan.hourly = Math.max(0, dayData.plan.hourly-1); saveDay(current); renderPlan(); });
+    if(hp) hp.addEventListener('click', ()=>{ dayData.exercise.hourly++; saveDay(current); renderExercise(); });
+    if(hm) hm.addEventListener('click', ()=>{ dayData.exercise.hourly = Math.max(0, dayData.exercise.hourly-1); saveDay(current); renderExercise(); });
   }
 
   function openExerciseModal(name){
@@ -996,7 +996,7 @@
         entries.push({date:d, data: defaultDay()});
       }
     }
-    const anyData = entries.some(e => e.data.weight || e.data.water>0 || e.data.sleep || e.data.mood || e.data.exercise);
+    const anyData = entries.some(e => e.data.weight || e.data.water>0 || e.data.sleep || e.data.mood || e.data.movement);
     if(!anyData){
       container.innerHTML = '<div class="empty">Log a few days on the Today tab<br>and your trends will show up here.</div>';
       return;
@@ -1022,7 +1022,7 @@
     const weightVals = entries.map(e=>e.data.weight);
     const waterVals = entries.map(e=>e.data.water);
     const sleepVals = entries.map(e=>e.data.sleep);
-    const exerciseVals = entries.map(e=>e.data.exercise);
+    const movementVals = entries.map(e=>e.data.movement);
     const moodScore = {low:1, meh:2, okay:3, good:4, great:5};
     const moodVals = entries.map(e=> e.data.mood ? moodScore[e.data.mood] : null);
 
@@ -1031,7 +1031,7 @@
       metricBlock('Water','moss', waterVals, 'cups', v=>v.toFixed(1)) +
       metricBlock('Sleep','amber', sleepVals, 'hrs', v=>v.toFixed(1)) +
       metricBlock('Mood','rose', moodVals, '/5', v=>v.toFixed(1)) +
-      metricBlock('Movement','amber', exerciseVals, 'min', v=>Math.round(v));
+      metricBlock('Movement','amber', movementVals, 'min', v=>Math.round(v));
   }
 
   (async function init(){

@@ -1,0 +1,39 @@
+Create a minimalist fitness instruction image for the exercise "Romanian Deadlift".
+
+Style:
+- White background
+- No borders, boxes, tables, icons, logos, muscle diagrams, or paragraphs
+- Modern flat vector illustration with realistic anatomy
+- High contrast
+- Consistent lighting
+- Clean instructional style similar to IKEA assembly instructions
+
+Layout:
+- Horizontal image
+- Five equally spaced illustrations showing one athlete performing the movement from left to right
+- Number each frame 1–5
+- No duplicate poses
+- Clearly show the entire range of motion
+- Plenty of white space between poses
+
+Frames:
+1. Starting position, standing tall holding a weight in front of the thighs
+2. Hinging halfway, weight lowering along the legs
+3. Bottom position, weight near the shins, flat back
+4. Driving the hips forward to rise
+5. Standing tall, lockout
+
+Text:
+- Large title at the top: "Romanian Deadlift"
+- Small labels only: Start, Hinge, Bottom, Drive, Finish
+- No additional text
+- No coaching cues
+- No sets or reps
+- No muscle diagrams
+
+Requirements:
+- Same athlete in every frame
+- Same camera angle
+- Same barbell or dumbbells throughout
+- Motion should read left-to-right like animation keyframes
+- Exercise form must be biomechanically correct

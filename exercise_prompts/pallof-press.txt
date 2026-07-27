@@ -1,0 +1,40 @@
+Create a minimalist fitness instruction image for the exercise "Pallof Press".
+
+Style:
+- White background
+- No borders, boxes, tables, icons, logos, muscle diagrams, or paragraphs
+- Modern flat vector illustration with realistic anatomy
+- High contrast
+- Consistent lighting
+- Clean instructional style similar to IKEA assembly instructions
+
+Layout:
+- Horizontal image
+- Five equally spaced illustrations showing one athlete performing the movement from left to right
+- Number each frame 1–5
+- No duplicate poses
+- Clearly show the entire range of motion
+- Plenty of white space between poses
+
+Frames:
+1. Starting position, athlete standing tall and facing forward toward the camera, a cable tower positioned to their side at chest height with the cable running horizontally into their hands, handle held with both hands at the center of the chest
+2. Pressing the handle halfway straight out in front of the chest, torso resisting rotation toward the cable tower
+3. Arms fully extended straight out in front of the chest, handle as far from the body as possible, torso still square and facing forward
+4. Pulling the handle halfway back in toward the chest
+5. Return to starting position, handle at the chest
+
+Text:
+- Large title at the top: "Pallof Press"
+- Small labels only: Start, Press, Extend, Return, Chest
+- No additional text
+- No coaching cues
+- No sets or reps
+- No muscle diagrams
+
+Requirements:
+- Same athlete in every frame
+- Same camera angle, athlete's chest and hips face the camera in every frame
+- The cable tower and its anchor point are visibly positioned to the athlete's side (perpendicular to the direction they face), never directly in front of them
+- Athlete's hips and shoulders stay square and facing forward the entire time, never turned toward the cable tower
+- Motion should read left-to-right like animation keyframes
+- Exercise form must be biomechanically correct

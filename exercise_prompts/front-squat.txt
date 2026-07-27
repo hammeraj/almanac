@@ -1,0 +1,40 @@
+Create a minimalist fitness instruction image for the exercise "Front Squat".
+
+Style:
+- White background
+- No borders, boxes, tables, icons, logos, muscle diagrams, or paragraphs
+- Modern flat vector illustration with realistic anatomy
+- High contrast
+- Consistent lighting
+- Clean instructional style similar to IKEA assembly instructions
+- Athlete wears a plain fitted t-shirt and shorts (no bare chest)
+
+Layout:
+- Horizontal image
+- Five equally spaced illustrations showing one athlete performing the movement from left to right
+- Number each frame 1–5
+- No duplicate poses
+- Clearly show the entire range of motion
+- Plenty of white space between poses
+
+Frames:
+1. Starting position, standing tall with the barbell racked across the front of the shoulders, elbows high
+2. Lowering halfway, elbows staying high
+3. Bottom position, sitting between the knees
+4. Driving upward
+5. Standing tall, lockout
+
+Text:
+- Large title at the top: "Front Squat"
+- Small labels only: Start, Lower, Bottom, Drive, Finish
+- No additional text
+- No coaching cues
+- No sets or reps
+- No muscle diagrams
+
+Requirements:
+- Same athlete in every frame, wearing a t-shirt in every frame
+- Same camera angle
+- Same barbell and front rack position throughout
+- Motion should read left-to-right like animation keyframes
+- Exercise form must be biomechanically correct

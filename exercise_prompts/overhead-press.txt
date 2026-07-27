@@ -1,0 +1,39 @@
+Create a minimalist fitness instruction image for the exercise "Overhead Press".
+
+Style:
+- White background
+- No borders, boxes, tables, icons, logos, muscle diagrams, or paragraphs
+- Modern flat vector illustration with realistic anatomy
+- High contrast
+- Consistent lighting
+- Clean instructional style similar to IKEA assembly instructions
+
+Layout:
+- Horizontal image
+- Five equally spaced illustrations showing one athlete performing the movement from left to right
+- Number each frame 1–5
+- No duplicate poses
+- Clearly show the entire range of motion
+- Plenty of white space between poses
+
+Frames:
+1. Starting position, standing tall with the weight at shoulder height
+2. Pressing halfway overhead
+3. Weight fully overhead, arms extended
+4. Lowering halfway
+5. Return to starting position at the shoulders
+
+Text:
+- Large title at the top: "Overhead Press"
+- Small labels only: Start, Press, Lockout, Lower, Return
+- No additional text
+- No coaching cues
+- No sets or reps
+- No muscle diagrams
+
+Requirements:
+- Same athlete in every frame
+- Same camera angle
+- Same barbell or dumbbells throughout
+- Motion should read left-to-right like animation keyframes
+- Exercise form must be biomechanically correct

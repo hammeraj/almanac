@@ -1,0 +1,40 @@
+Create a minimalist fitness instruction image for the exercise "Foam Roll Calves".
+
+Style:
+- White background
+- No borders, boxes, tables, icons, logos, muscle diagrams, or paragraphs
+- Modern flat vector illustration with realistic anatomy
+- High contrast
+- Consistent lighting
+- Clean instructional style similar to IKEA assembly instructions
+
+Layout:
+- Horizontal image
+- Five equally spaced illustrations showing one athlete performing the movement from left to right
+- Number each frame 1–5
+- No duplicate poses
+- Clearly show the roller moving along the entire calf
+- Plenty of white space between poses
+
+Frames:
+1. Seated on the floor, positioning the foam roller under the ankle, hands behind for support
+2. Rolling toward the lower calf
+3. Rolling to the middle of the calf
+4. Rolling toward the upper calf
+5. Rolling to the very top of the calf, just below the knee
+
+Text:
+- Large title at the top: "Foam Roll Calves"
+- Small labels only: Ankle, Lower, Middle, Upper, Top
+- No additional text
+- No coaching cues
+- No sets or reps
+- No muscle diagrams
+
+Requirements:
+- Same athlete in every frame
+- Same camera angle
+- Same foam roller throughout
+- Each frame shows the roller at a clearly different point along the calf, from the ankle in frame 1 to just below the knee in frame 5
+- Motion should read left-to-right like animation keyframes
+- Exercise form must be biomechanically correct

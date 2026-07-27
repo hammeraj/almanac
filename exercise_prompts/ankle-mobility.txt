@@ -1,0 +1,42 @@
+Create a minimalist fitness instruction image for the exercise "Ankle Mobility".
+
+Style:
+- White background
+- No borders, boxes, tables, logos, muscle diagrams, or paragraphs (small motion arrows are allowed, see Requirements)
+- Modern flat vector illustration with realistic anatomy
+- High contrast
+- Consistent lighting
+- Clean instructional style similar to IKEA assembly instructions
+
+Layout:
+- Horizontal image
+- Five equally spaced illustrations showing one athlete performing the movement from left to right
+- Number each frame 1–5
+- No duplicate poses
+- Clearly show the entire range of motion
+- Plenty of white space between poses
+
+Frames:
+1. Half-kneeling position, front foot flat on the floor about one foot-length in front of the body, back knee down, torso upright, front shin vertical
+2. Driving the front knee forward a small amount past the toes, front heel completely flat on the floor
+3. Front knee driven further forward, shin at a noticeable forward angle, front heel still completely flat
+4. Front knee driven as far forward over the toes as possible without the front heel lifting, maximum ankle bend
+5. Returning the front knee back to the starting vertical shin position
+
+Text:
+- Large title at the top: "Ankle Mobility"
+- Small labels only: Start, Small Bend, Halfway, Max Bend, Return
+- No additional text
+- No coaching cues
+- No sets or reps
+- No muscle diagrams
+
+Requirements:
+- Same athlete in every frame
+- Same camera angle, side view of the half-kneeling position
+- Same half-kneeling stance throughout, only the front shin angle changes between frames
+- Each frame must show a clearly different forward angle of the front shin — no two frames may look identical
+- The front heel never lifts off the floor in any frame
+- In frames 2, 3, and 4, draw one small black curved arrow next to the front knee pointing in the direction of forward travel, to make the motion direction unambiguous
+- Motion should read left-to-right like animation keyframes
+- Exercise form must be biomechanically correct

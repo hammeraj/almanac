@@ -1,0 +1,37 @@
+Create a minimalist fitness instruction image for the exercise "Couch Stretch".
+
+Style:
+- White background
+- No borders, boxes, tables, icons, logos, muscle diagrams, or paragraphs
+- Modern flat vector illustration with realistic anatomy
+- High contrast
+- Consistent lighting
+- Clean instructional style similar to IKEA assembly instructions
+
+Layout:
+- Horizontal image
+- Three equally spaced illustrations showing one athlete performing the stretch from left to right
+- Number each frame 1–3
+- No duplicate poses
+- Clearly show the entire stretch position
+- Plenty of white space between poses
+
+Frames:
+1. Setting up in a half-kneeling position with the back foot propped up behind on a wall or couch
+2. Full stretch position, hips sinking forward, torso upright
+3. Releasing out of the stretch
+
+Text:
+- Large title at the top: "Couch Stretch"
+- Small labels only: Start, Hold, Release
+- No additional text
+- No coaching cues
+- No sets or reps
+- No muscle diagrams
+
+Requirements:
+- Same athlete in every frame
+- Same camera angle
+- Same kneeling setup throughout
+- Motion should read left-to-right like animation keyframes
+- Exercise form must be biomechanically correct

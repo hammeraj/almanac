@@ -1,0 +1,39 @@
+Create a minimalist fitness instruction image for the exercise "Lat Pulldown".
+
+Style:
+- White background
+- No borders, boxes, tables, icons, logos, muscle diagrams, or paragraphs
+- Modern flat vector illustration with realistic anatomy
+- High contrast
+- Consistent lighting
+- Clean instructional style similar to IKEA assembly instructions
+
+Layout:
+- Horizontal image
+- Five equally spaced illustrations showing one athlete performing the movement from left to right
+- Number each frame 1–5
+- No duplicate poses
+- Clearly show the entire range of motion
+- Plenty of white space between poses
+
+Frames:
+1. Starting position, seated at the machine with arms extended overhead holding the bar
+2. Beginning to pull, elbows driving down and back
+3. Bar pulled down to the upper chest
+4. Beginning to return, arms extending
+5. Return to starting position
+
+Text:
+- Large title at the top: "Lat Pulldown"
+- Small labels only: Start, Pull, Chest, Return, Extend
+- No additional text
+- No coaching cues
+- No sets or reps
+- No muscle diagrams
+
+Requirements:
+- Same athlete in every frame
+- Same camera angle
+- Same lat pulldown machine throughout
+- Motion should read left-to-right like animation keyframes
+- Exercise form must be biomechanically correct

@@ -1,0 +1,36 @@
+Create a minimalist fitness instruction image for the exercise "Suitcase Carry".
+
+Style:
+- White background
+- No borders, boxes, tables, icons, logos, muscle diagrams, or paragraphs
+- Modern flat vector illustration with realistic anatomy
+- High contrast
+- Consistent lighting
+- Clean instructional style similar to IKEA assembly instructions
+
+Layout:
+- Horizontal image
+- Two equally spaced illustrations showing one athlete performing the movement from left to right
+- Number each frame 1–2
+- No duplicate poses
+- Clearly show the exercise setup and the walking motion
+- Plenty of white space between poses
+
+Frames:
+1. Starting position, standing tall holding a single weight in one hand at the side, the opposite hand empty and relaxed at the side
+2. Mid-stride, walking with one foot forward, torso upright and level, resisting a lean toward the loaded side, opposite hand still empty
+
+Text:
+- Large title at the top: "Suitcase Carry"
+- Small labels only: Start, Walk
+- No additional text
+- No coaching cues
+- No sets or reps
+- No muscle diagrams
+
+Requirements:
+- Same athlete in every frame
+- Only one hand holds a weight in every frame — the opposite hand and arm are always empty and visibly relaxed at the side, unlike a two-handed farmer carry
+- Same camera angle
+- Motion should read left-to-right like animation keyframes
+- Exercise form must be biomechanically correct

@@ -1,0 +1,39 @@
+Create a minimalist fitness instruction image for the exercise "Bulgarian Split Squat".
+
+Style:
+- White background
+- No borders, boxes, tables, icons, logos, muscle diagrams, or paragraphs
+- Modern flat vector illustration with realistic anatomy
+- High contrast
+- Consistent lighting
+- Clean instructional style similar to IKEA assembly instructions
+
+Layout:
+- Horizontal image
+- Five equally spaced illustrations showing one athlete performing the movement from left to right
+- Number each frame 1–5
+- No duplicate poses
+- Clearly show the entire range of motion
+- Plenty of white space between poses
+
+Frames:
+1. Starting position, standing tall with rear foot elevated on a bench, holding dumbbells
+2. Lowering halfway, front knee bending
+3. Bottom position, back knee near the floor
+4. Pressing upward through the front leg
+5. Standing tall, lockout
+
+Text:
+- Large title at the top: "Bulgarian Split Squat"
+- Small labels only: Start, Lower, Bottom, Press, Finish
+- No additional text
+- No coaching cues
+- No sets or reps
+- No muscle diagrams
+
+Requirements:
+- Same athlete in every frame
+- Same camera angle
+- Same bench and dumbbells throughout
+- Motion should read left-to-right like animation keyframes
+- Exercise form must be biomechanically correct

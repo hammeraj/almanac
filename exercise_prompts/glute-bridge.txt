@@ -1,0 +1,39 @@
+Create a minimalist fitness instruction image for the exercise "Glute Bridge".
+
+Style:
+- White background
+- No borders, boxes, tables, icons, logos, muscle diagrams, or paragraphs
+- Modern flat vector illustration with realistic anatomy
+- High contrast
+- Consistent lighting
+- Clean instructional style similar to IKEA assembly instructions
+
+Layout:
+- Horizontal image
+- Five equally spaced illustrations showing one athlete performing the movement from left to right
+- Number each frame 1–5
+- No duplicate poses
+- Clearly show the entire range of motion
+- Plenty of white space between poses
+
+Frames:
+1. Starting position, lying on back with knees bent, feet flat, hips on the floor
+2. Lifting hips halfway
+3. Hips fully raised, straight line from knees to shoulders
+4. Lowering hips halfway
+5. Return to starting position
+
+Text:
+- Large title at the top: "Glute Bridge"
+- Small labels only: Start, Lift, Top, Lower, Return
+- No additional text
+- No coaching cues
+- No sets or reps
+- No muscle diagrams
+
+Requirements:
+- Same athlete in every frame
+- Same camera angle
+- Same supine floor position throughout
+- Motion should read left-to-right like animation keyframes
+- Exercise form must be biomechanically correct

@@ -1,0 +1,39 @@
+Create a minimalist fitness instruction image for the exercise "Bench Press".
+
+Style:
+- White background
+- No borders, boxes, tables, icons, logos, muscle diagrams, or paragraphs
+- Modern flat vector illustration with realistic anatomy
+- High contrast
+- Consistent lighting
+- Clean instructional style similar to IKEA assembly instructions
+
+Layout:
+- Horizontal image
+- Five equally spaced illustrations showing one athlete performing the movement from left to right
+- Number each frame 1–5
+- No duplicate poses
+- Clearly show the entire range of motion
+- Plenty of white space between poses
+
+Frames:
+1. Starting position, lying on a flat bench with arms extended holding the bar above the chest
+2. Lowering the bar halfway toward the chest
+3. Bar at the chest, bottom position
+4. Pressing the bar upward
+5. Lockout, arms fully extended above the chest
+
+Text:
+- Large title at the top: "Bench Press"
+- Small labels only: Start, Lower, Bottom, Press, Lockout
+- No additional text
+- No coaching cues
+- No sets or reps
+- No muscle diagrams
+
+Requirements:
+- Same athlete in every frame
+- Same camera angle
+- Same flat bench and barbell throughout
+- Motion should read left-to-right like animation keyframes
+- Exercise form must be biomechanically correct

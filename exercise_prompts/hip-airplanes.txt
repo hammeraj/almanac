@@ -1,0 +1,39 @@
+Create a minimalist fitness instruction image for the exercise "Hip Airplanes".
+
+Style:
+- White background
+- No borders, boxes, tables, icons, logos, muscle diagrams, or paragraphs
+- Modern flat vector illustration with realistic anatomy
+- High contrast
+- Consistent lighting
+- Clean instructional style similar to IKEA assembly instructions
+
+Layout:
+- Horizontal image
+- Five equally spaced illustrations showing one athlete performing the movement from left to right
+- Number each frame 1–5
+- No duplicate poses
+- Clearly show the entire range of motion
+- Plenty of white space between poses
+
+Frames:
+1. Starting position, balanced on one leg, hinged slightly forward, free leg extended back
+2. Rotating torso and free leg open
+3. Full open rotation, like a propeller
+4. Rotating torso and free leg back toward center
+5. Return to starting position
+
+Text:
+- Large title at the top: "Hip Airplanes"
+- Small labels only: Start, Open, Full Open, Return, Center
+- No additional text
+- No coaching cues
+- No sets or reps
+- No muscle diagrams
+
+Requirements:
+- Same athlete in every frame
+- Same camera angle
+- Same single-leg balance stance throughout
+- Motion should read left-to-right like animation keyframes
+- Exercise form must be biomechanically correct

@@ -1,0 +1,38 @@
+Create a minimalist fitness instruction image for the exercise "Chest Supported Row".
+
+Style:
+- White background
+- No borders, boxes, tables, icons, logos, muscle diagrams, or paragraphs
+- Modern flat vector illustration with realistic anatomy
+- High contrast
+- Consistent lighting
+- Clean instructional style similar to IKEA assembly instructions
+
+Layout:
+- Horizontal image
+- Four equally spaced illustrations showing one athlete performing the movement from left to right
+- Number each frame 1–4
+- No duplicate poses
+- Clearly show the entire range of motion
+- Plenty of white space between poses
+
+Frames:
+1. Starting position, lying face-down on an incline bench with arms hanging straight down holding dumbbells
+2. Beginning to pull, elbows bending
+3. Dumbbells pulled to the ribs, shoulder blades fully squeezed together
+4. Returning to starting position, arms extended
+
+Text:
+- Large title at the top: "Chest Supported Row"
+- Small labels only: Start, Pull, Squeeze, Return
+- No additional text
+- No coaching cues
+- No sets or reps
+- No muscle diagrams
+
+Requirements:
+- Same athlete in every frame
+- Same camera angle
+- Same incline bench and dumbbells throughout
+- Motion should read left-to-right like animation keyframes
+- Exercise form must be biomechanically correct

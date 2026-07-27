@@ -1,0 +1,63 @@
+Create a minimalist instructional exercise sheet for "Thread the Needle".
+
+White background.
+
+Single athlete.
+
+Same camera angle in every frame.
+
+The camera never moves.
+
+The athlete always faces the RIGHT side of the image.
+
+The athlete remains on hands and knees throughout the sequence.
+
+The RIGHT hand remains planted on the floor in every frame.
+
+The RIGHT knee remains under the right hip.
+
+The LEFT knee remains under the left hip.
+
+The hips remain centered above the knees.
+
+Do not mirror the athlete between frames.
+
+Do not swap left and right.
+
+Exactly one arm moves in this entire sequence: the LEFT arm. The RIGHT arm never leaves the floor in any frame.
+
+Generate exactly three frames.
+
+Frame 1:
+Quadruped position.
+Right hand directly below right shoulder.
+Left hand directly below left shoulder.
+Neutral spine.
+Head facing the floor.
+
+Frame 2:
+Right hand remains planted, supporting all of the body's weight on that side.
+Left arm has threaded fully underneath the torso and past the right arm.
+Left shoulder rests on the floor.
+Left side of the head rests on the floor.
+Hips remain stacked directly above the knees, not twisted or collapsed.
+
+Frame 3:
+Return to the original quadruped position.
+Both hands on the floor.
+Neutral spine.
+
+Minimal text only:
+Title:
+Thread the Needle
+
+Frame labels:
+Start
+Thread
+Return
+
+No coaching text.
+No anatomy diagrams.
+No icons.
+No arrows.
+No extra graphics.

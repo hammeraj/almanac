@@ -1,0 +1,40 @@
+Create a minimalist fitness instruction image for the exercise "Dead Bug".
+
+Style:
+- White background
+- No borders, boxes, tables, icons, logos, muscle diagrams, or paragraphs
+- Modern flat vector illustration with realistic anatomy
+- High contrast
+- Consistent lighting
+- Clean instructional style similar to IKEA assembly instructions
+
+Layout:
+- Horizontal image
+- Three equally spaced illustrations showing one athlete performing the movement from left to right
+- Number each frame 1–3
+- No duplicate poses
+- Clearly show the entire range of motion
+- Plenty of white space between poses
+
+Frames:
+1. Starting position, lying on back, both arms extended straight up toward the ceiling, both knees bent at 90 degrees in the air
+2. The right arm is lowered down toward the floor above the head while the left leg has straightened and lowered toward the floor at the same time; the left arm stays extended straight up and the right knee stays bent at 90 degrees, both unmoved
+3. Return to starting position: both arms up, both knees bent at 90 degrees
+
+Text:
+- Large title at the top: "Dead Bug"
+- Small labels only: Start, Lower, Return
+- No additional text
+- No coaching cues
+- No sets or reps
+- No muscle diagrams
+
+Requirements:
+- Same athlete in every frame
+- Same camera angle
+- Same supine floor position throughout
+- Exactly two arms and two legs are visible in every frame — never draw a third arm, third leg, or duplicated limb
+- The lowered arm and the lowered leg must be on opposite sides of the body from each other
+- Only show one side of the movement (one arm and the opposite leg lowering) — do not depict both sides or a switch between sides
+- Motion should read left-to-right like animation keyframes
+- Exercise form must be biomechanically correct

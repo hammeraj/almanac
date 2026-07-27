@@ -1,0 +1,36 @@
+Create a minimalist fitness instruction image for the exercise "Farmer Carry".
+
+Style:
+- White background
+- No borders, boxes, tables, icons, logos, muscle diagrams, or paragraphs
+- Modern flat vector illustration with realistic anatomy
+- High contrast
+- Consistent lighting
+- Clean instructional style similar to IKEA assembly instructions
+
+Layout:
+- Horizontal image
+- Two equally spaced illustrations showing one athlete performing the movement from left to right
+- Number each frame 1–2
+- No duplicate poses
+- Clearly show the exercise setup and the walking motion
+- Plenty of white space between poses
+
+Frames:
+1. Starting position, standing tall holding a heavy weight in each hand, feet together
+2. Mid-stride, walking with one foot forward, a weight held in each hand, posture tall
+
+Text:
+- Large title at the top: "Farmer Carry"
+- Small labels only: Start, Walk
+- No additional text
+- No coaching cues
+- No sets or reps
+- No muscle diagrams
+
+Requirements:
+- Same athlete in every frame
+- Same camera angle
+- Same pair of carry weights throughout, one in each hand
+- Motion should read left-to-right like animation keyframes
+- Exercise form must be biomechanically correct

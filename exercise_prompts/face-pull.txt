@@ -1,0 +1,38 @@
+Create a minimalist fitness instruction image for the exercise "Face Pull".
+
+Style:
+- White background
+- No borders, boxes, tables, icons, logos, muscle diagrams, or paragraphs
+- Modern flat vector illustration with realistic anatomy
+- High contrast
+- Consistent lighting
+- Clean instructional style similar to IKEA assembly instructions
+
+Layout:
+- Horizontal image
+- Four equally spaced illustrations showing one athlete performing the movement from left to right
+- Number each frame 1–4
+- No duplicate poses
+- Clearly show the entire range of motion
+- Plenty of white space between poses
+
+Frames:
+1. Starting position, arms extended toward a cable anchored at head height
+2. Beginning to pull, elbows flaring outward
+3. Handles pulled toward the face, elbows high and wide, full contraction
+4. Returning to starting position, arms extended
+
+Text:
+- Large title at the top: "Face Pull"
+- Small labels only: Start, Pull, Face, Return
+- No additional text
+- No coaching cues
+- No sets or reps
+- No muscle diagrams
+
+Requirements:
+- Same athlete in every frame
+- Same camera angle
+- Same cable machine at head height throughout
+- Motion should read left-to-right like animation keyframes
+- Exercise form must be biomechanically correct
