@@ -1,0 +1,32 @@
+Build a 7-day meal plan (Sunday through Saturday) for a single adult.
+
+Fixed constraints (never break these):
+- Every meal serves exactly 1 person.
+- Every meal takes under 30 minutes of hands-on prep and cook time (note any inactive marinating/chilling time separately).
+- No onions in any form, anywhere in the week.
+- No green peppers (bell or otherwise), anywhere in the week.
+- Each day totals between 1800 and 2400 kcal, and don't cluster every day at the same number — vary it across the week within that range depending on the day's meals.
+- Each day includes breakfast, lunch, dinner, and one snack.
+- Favor ingredients that repeat across multiple meals in the week (e.g. a protein or vegetable used Monday and again Thursday) so the resulting grocery list stays short — don't pick seven completely unrelated meals.
+- Vary protein sources and cuisines across the week so it doesn't feel repetitive day to day, while still reusing core ingredients per the point above.
+
+Tell me if there's anything to factor in: [optional — target daily protein, a cuisine to lean into or avoid, ingredients to use up, a day that needs to be extra quick or meal-prepped ahead, etc.]
+
+Output format — return one JavaScript object per day, in this exact shape, ready to paste as entries into a MEAL_PLANS array (each `breakfast`/`lunch`/`dinner`/`snacks` value is the kebab-case id of a recipe — provide the matching RECIPE_LIBRARY entries for every id you reference, using the same schema as the single-meal prompt in this folder):
+
+{id:'sunday', label:'Sunday', kcal:0000, protein:000,
+  breakfast:'recipe-id', lunch:'recipe-id', dinner:'recipe-id', snacks:'recipe-id'}
+
+Then, below the seven day objects, list every new recipe referenced as a RECIPE_LIBRARY entry:
+
+'recipe-id': {
+  name:'Recipe Name', meal:'breakfast', kcal:000, protein:00, prepMin:00, servings:1,
+  ingredients:['quantity + ingredient', ...],
+  steps:['Step one.', ...]
+}
+
+Rules for the output:
+- `kcal`/`protein` on each day object are the sum of that day's four meals — check the math.
+- Reuse the same recipe id across multiple days where that's the intent (e.g. the same breakfast twice), rather than duplicating near-identical recipes under different ids.
+- Double-check the full week contains no onion and no green pepper before returning it.
+- No commentary before, between, or after the objects — just the day objects followed by the recipe objects, so the whole thing can be pasted directly into the app's source.

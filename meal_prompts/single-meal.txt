@@ -1,0 +1,33 @@
+Create one home-cooked meal for a single adult.
+
+Fixed constraints (never break these):
+- Serves exactly 1 person. Do not write a recipe meant for a household or that requires halving.
+- Total hands-on prep and cook time is under 30 minutes. If something needs to marinate or chill overnight, that waiting time doesn't count, but say so explicitly.
+- No onions in any form (fresh, powder, dried, or as part of a pre-made sauce/broth that lists onion).
+- No green peppers (bell or otherwise) in any form.
+- Ordinary grocery-store ingredients only — nothing that requires a specialty store.
+- Realistic, appetizing, and simple enough to actually cook on a weeknight.
+
+Tell me:
+- Meal type: [breakfast / lunch / dinner / snack]
+- Target calories: [number or range, aim for something that fits inside an 1800-2400 kcal/day diet]
+- Target protein: [number or range in grams — lean toward higher protein]
+- Anything else to avoid or prefer: [optional — other allergies, a cuisine preference, ingredients to use up, etc.]
+
+Output format — return ONLY a single JavaScript object literal in this exact shape, ready to paste as a new entry into a RECIPE_LIBRARY object keyed by a short kebab-case id:
+
+'kebab-case-id': {
+  name:'Recipe Name', meal:'breakfast', kcal:000, protein:00, prepMin:00, servings:1,
+  ingredients:['quantity + ingredient', 'quantity + ingredient', ...],
+  steps:['Step one.', 'Step two.', ...]
+}
+
+Rules for the output:
+- `meal` must be exactly one of: 'breakfast', 'lunch', 'dinner', 'snack'.
+- `kcal` and `protein` are your best realistic estimate given the ingredient quantities — don't just invent round numbers, make them consistent with what's actually listed.
+- `prepMin` is the total active time in minutes, and must be 30 or less.
+- `servings` is always 1.
+- `ingredients` are written as "quantity + ingredient" strings (e.g. "6 oz chicken breast, cubed"), specific enough that a grocery list could be built from them later.
+- `steps` are short, imperative, numbered by array order — no step numbers inside the text itself.
+- Double-check the finished recipe contains no onion and no green pepper before returning it.
+- No commentary before or after the object — just the object literal, so it can be pasted directly into the app's source.

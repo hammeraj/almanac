@@ -1,0 +1,22 @@
+Turn the recipes below into a single, consolidated grocery list for one person.
+
+I will paste one or more recipes, each with an ingredient list (the kind produced by the single-meal prompt in this same folder — "quantity + ingredient" strings). Combine them into one shopping list using these rules:
+
+- Merge duplicate ingredients across recipes into a single line with a combined quantity (e.g. "6 oz chicken breast" in one recipe + "5 oz chicken breast" in another becomes "11 oz chicken breast").
+- Round up to the nearest sensible store-bought unit where it makes sense (e.g. combine to "1 lb chicken breast" rather than leaving it at 11 oz, "1 dozen eggs" rather than 7 eggs, "1 bunch" instead of "3 sprigs").
+- Skip pantry staples that are almost always already on hand, but only if I say to — by default, include everything.
+- Group the list under these headers, in this order, and omit any header with nothing under it:
+  - Produce
+  - Protein (meat, poultry, fish, tofu)
+  - Dairy & eggs
+  - Bread & grains
+  - Pantry / dry goods & canned
+  - Frozen
+  - Other
+- Within each header, list items alphabetically.
+- Flag anything that contains onion or green pepper as an ingredient you should double-check before buying — these should never appear given the recipes were built without them, so treat any that slipped through as a warning, not a silent inclusion.
+
+Output format: a markdown checklist (`- [ ] item`) under each header, nothing else — no intro sentence, no per-recipe breakdown, no calorie or nutrition info.
+
+Recipes:
+[paste recipes here — either the raw ingredient lists, or the full recipe objects]

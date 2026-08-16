@@ -63,6 +63,30 @@
     font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--moss);
     background:var(--moss-light); padding:3px 9px; border-radius:20px; border:none; cursor:pointer;
   }
+  .settings-btn{
+    width:30px; height:30px; border-radius:50%; border:1px solid var(--line);
+    background:var(--card); color:var(--ink-soft); font-size:15px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; padding:0;
+  }
+  .settings-btn:active{transform:scale(0.92);}
+
+  /* settings modal */
+  .settings-field{margin-bottom:16px;}
+  .settings-label{font-size:13px; font-weight:500; margin-bottom:6px;}
+  .settings-caption{font-size:11.5px; color:var(--ink-soft); line-height:1.5; margin-top:6px;}
+  .settings-row{display:flex; align-items:center; gap:10px; margin-top:8px;}
+  .settings-status{font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--ink-soft); margin-top:8px;}
+  .settings-btn-row{display:flex; gap:8px; margin-top:10px;}
+  .toggle-switch{
+    width:40px; height:24px; border-radius:12px; border:1px solid var(--line); background:var(--paper);
+    position:relative; cursor:pointer; flex-shrink:0; padding:0;
+  }
+  .toggle-switch .knob{
+    width:18px; height:18px; border-radius:50%; background:var(--ink-soft); position:absolute; top:2px; left:2px;
+    transition:left 0.15s ease, background 0.15s ease;
+  }
+  .toggle-switch.on{background:var(--moss-light); border-color:var(--moss);}
+  .toggle-switch.on .knob{left:18px; background:var(--moss);}
 
   /* arc */
   .arc-wrap{display:flex; flex-direction:column; align-items:center; margin:14px 0 22px;}
@@ -264,7 +288,10 @@
 
   <div class="header">
     <span class="eyebrow">Almanac</span>
-    <button class="today-pill" id="jumpToday">today</button>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <button class="today-pill" id="jumpToday">today</button>
+      <button class="settings-btn" id="openSettings" aria-label="Settings">⚙</button>
+    </div>
   </div>
 
   <div class="date-nav" style="justify-content:center; margin-bottom:2px;">
@@ -347,8 +374,8 @@
 
 </div>
 
-<div class="modal-overlay" id="exerciseModalOverlay">
-  <div class="modal-sheet" id="exerciseModalSheet"></div>
+<div class="modal-overlay" id="infoModalOverlay">
+  <div class="modal-sheet" id="infoModalSheet"></div>
 </div>
 
 <div class="tabbar">
@@ -437,6 +464,18 @@
       {id:'d2', name:'Easy hike'}
     ]}
   ];
+
+  // Exercises are partitioned by plan so more plans (standing desk, travel, etc.)
+  // can be added later as sibling entries without touching this one.
+  const EXERCISE_PLANS = {
+    'desk-job': {
+      label: 'Desk job',
+      whyNote: 'Extra attention on calves, ankles, and glutes throughout \u2014 that\u2019s where a little consistent work tends to pay off most for hip, back, and ankle comfort.',
+      morning: MORNING_ROUTINE,
+      weekly: WEEKLY_EXERCISE
+    }
+  };
+  const DEFAULT_EXERCISE_PLAN = 'desk-job';
 
   function poseSVG(type, holdOnly){
     const L = '<g fill="none" stroke="var(--ink)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">';
@@ -556,12 +595,33 @@
   const MOVEMENT_CHIPS = [10,20,30,45,60];
 
   let current = new Date();
-  let settings = {unit:'lb', waterGoal:8, calorieGoal:2000};
+  let settings = {
+    unit:'lb', waterGoal:8, calorieGoal:2000, exercisePlan:DEFAULT_EXERCISE_PLAN, mealPlan:'steady',
+    reminderEnabled:false, reminderTime:'18:00', lastReminderDate:null
+  };
   let dayData = defaultDay();
+  // Never persisted (not part of `settings`/localStorage) — cleared on reload by design.
+  let openaiKey = '';
 
   function defaultDay(){
-    return {weight:null, water:0, sleep:null, mood:null, movement:null, exercise:{morning:{}, day:{}, hourly:0},
+    return {weight:null, water:0, sleep:null, mood:null, movement:null, exercise:{plans:{}},
       meals:{breakfast:[], lunch:[], dinner:[], snacks:[]}};
+  }
+
+  // Returns the completion bucket for the active exercise plan, migrating the
+  // legacy pre-plans shape ({morning,day,hourly} directly on .exercise) into it.
+  function exerciseBucket(){
+    if(!dayData.exercise) dayData.exercise = {plans:{}};
+    if(!dayData.exercise.plans){
+      const legacy = dayData.exercise;
+      dayData.exercise = {plans:{}};
+      dayData.exercise.plans[DEFAULT_EXERCISE_PLAN] = {
+        morning: legacy.morning || {}, day: legacy.day || {}, hourly: legacy.hourly || 0
+      };
+    }
+    const planId = settings.exercisePlan;
+    if(!dayData.exercise.plans[planId]) dayData.exercise.plans[planId] = {morning:{}, day:{}, hourly:0};
+    return dayData.exercise.plans[planId];
   }
   function pad(n){return n<10 ? '0'+n : ''+n;}
   function keyFor(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
@@ -601,7 +661,7 @@
     try{
       dayData = raw ? JSON.parse(raw) : defaultDay();
     }catch(e){ dayData = defaultDay(); }
-    if(!dayData.exercise) dayData.exercise = {morning:{}, day:{}, hourly:0};
+    if(!dayData.exercise) dayData.exercise = {plans:{}};
     if(!dayData.meals) dayData.meals = {breakfast:[], lunch:[], dinner:[], snacks:[]};
   }
   async function saveDay(d){
@@ -641,12 +701,14 @@
   }
 
   function renderExerciseArc(){
+    const plan = EXERCISE_PLANS[settings.exercisePlan] || EXERCISE_PLANS[DEFAULT_EXERCISE_PLAN];
+    const bucket = exerciseBucket();
     const dow = current.getDay();
-    const day = WEEKLY_EXERCISE[dow];
-    const morningDone = MORNING_ROUTINE.filter(i=>dayData.exercise.morning[i.id]).length;
-    const dayDone = day.items.filter(i=>dayData.exercise.day[i.id]).length;
+    const day = plan.weekly[dow];
+    const morningDone = plan.morning.filter(i=>bucket.morning[i.id]).length;
+    const dayDone = day.items.filter(i=>bucket.day[i.id]).length;
     const n = morningDone + dayDone;
-    const total = MORNING_ROUTINE.length + day.items.length;
+    const total = plan.morning.length + day.items.length;
     drawArc(n, total);
     const caption = document.getElementById('arcCaption');
     if(total>0 && n===total) caption.innerHTML = '<b>All done</b> — nice work';
@@ -781,6 +843,7 @@
   });
   document.getElementById('unitLb').addEventListener('click', ()=>{ settings.unit='lb'; saveSettings(); renderWeight(); });
   document.getElementById('unitKg').addEventListener('click', ()=>{ settings.unit='kg'; saveSettings(); renderWeight(); });
+  document.getElementById('openSettings').addEventListener('click', openSettingsModal);
 
   // tabs
   const tabToday = document.getElementById('tabToday');
@@ -824,13 +887,15 @@
   });
 
   function renderExercise(){
+    const plan = EXERCISE_PLANS[settings.exercisePlan] || EXERCISE_PLANS[DEFAULT_EXERCISE_PLAN];
+    const bucket = exerciseBucket();
     const dow = current.getDay();
-    const day = WEEKLY_EXERCISE[dow];
+    const day = plan.weekly[dow];
     const isWorkday = dow>=1 && dow<=5;
 
     function checklist(items, bucketKey){
       return items.map(it=>{
-        const done = !!dayData.exercise[bucketKey][it.id];
+        const done = !!bucket[bucketKey][it.id];
         const hasInfo = EXERCISE_LIBRARY.hasOwnProperty(it.name);
         return '<div class="check-item'+(done?' done':'')+'" data-bucket="'+bucketKey+'" data-id="'+it.id+'">'+
           '<div class="check-item-main">'+
@@ -842,16 +907,21 @@
       }).join('');
     }
 
-    const morningDone = MORNING_ROUTINE.filter(i=>dayData.exercise.morning[i.id]).length;
-    const dayDone = day.items.filter(i=>dayData.exercise.day[i.id]).length;
+    const morningDone = plan.morning.filter(i=>bucket.morning[i.id]).length;
+    const dayDone = day.items.filter(i=>bucket.day[i.id]).length;
 
     let html = '';
+    html += '<div class="chips" id="planChips" style="margin-top:0; margin-bottom:16px;">'+
+      Object.keys(EXERCISE_PLANS).map(id=>
+        '<div class="chip'+(id===settings.exercisePlan?' active':'')+'" data-plan="'+id+'">'+EXERCISE_PLANS[id].label+'</div>'
+      ).join('')+
+    '</div>';
     html += '<div class="exercise-head"><h3>'+day.title+'</h3></div>';
     if(day.note) html += '<div class="exercise-sub">'+day.note+'</div>';
 
     html += '<div class="card"><div class="block-heading">Morning mobility</div>';
-    html += '<div class="exercise-progress"><b>'+morningDone+'</b> / '+MORNING_ROUTINE.length+' done</div>';
-    html += checklist(MORNING_ROUTINE, 'morning');
+    html += '<div class="exercise-progress"><b>'+morningDone+'</b> / '+plan.morning.length+' done</div>';
+    html += checklist(plan.morning, 'morning');
     html += '</div>';
 
     html += '<div class="card"><div class="block-heading">'+day.title+'</div>';
@@ -863,60 +933,174 @@
       html += '<div class="card"><div class="block-heading">Hourly reset</div>';
       html += '<div class="single-note" style="margin-bottom:12px;">Every hour: stand up, walk 2 min, 10 bodyweight squats, 10 calf raises.</div>';
       html += '<div class="hourly-row"><button class="stepper-btn" id="hourlyMinus" style="width:36px;height:36px;border-radius:10px;border:1px solid var(--line);background:var(--paper);font-size:17px;">−</button>'+
-        '<div class="hourly-count">'+dayData.exercise.hourly+'</div>'+
+        '<div class="hourly-count">'+bucket.hourly+'</div>'+
         '<button id="hourlyPlus" style="width:36px;height:36px;border-radius:10px;border:1px solid var(--line);background:var(--paper);font-size:17px;">+</button>'+
         '<span style="font-size:12.5px; color:var(--ink-soft);">times today</span></div>';
       html += '</div>';
     }
 
-    html += '<div class="why-note">Extra attention on calves, ankles, and glutes throughout \u2014 that\u2019s where a little consistent work tends to pay off most for hip, back, and ankle comfort.</div>';
+    if(plan.whyNote) html += '<div class="why-note">'+plan.whyNote+'</div>';
 
     document.getElementById('exerciseContent').innerHTML = html;
     renderExerciseArc();
 
+    document.querySelectorAll('#planChips .chip').forEach(el=>{
+      el.addEventListener('click', ()=>{
+        const id = el.getAttribute('data-plan');
+        if(id === settings.exercisePlan) return;
+        settings.exercisePlan = id;
+        saveSettings();
+        renderExercise();
+      });
+    });
     document.querySelectorAll('.check-item-main').forEach(el=>{
       el.addEventListener('click', ()=>{
         const parent = el.closest('.check-item');
-        const bucket = parent.getAttribute('data-bucket');
+        const b = parent.getAttribute('data-bucket');
         const id = parent.getAttribute('data-id');
-        dayData.exercise[bucket][id] = !dayData.exercise[bucket][id];
+        bucket[b][id] = !bucket[b][id];
         saveDay(current);
         renderExercise();
       });
     });
-    document.querySelectorAll('.info-btn').forEach(el=>{
+    document.querySelectorAll('.info-btn[data-exercise]').forEach(el=>{
       el.addEventListener('click', (e)=>{
         e.stopPropagation();
-        openExerciseModal(el.getAttribute('data-exercise'));
+        openExerciseInfo(el.getAttribute('data-exercise'));
       });
     });
     const hp = document.getElementById('hourlyPlus');
     const hm = document.getElementById('hourlyMinus');
-    if(hp) hp.addEventListener('click', ()=>{ dayData.exercise.hourly++; saveDay(current); renderExercise(); });
-    if(hm) hm.addEventListener('click', ()=>{ dayData.exercise.hourly = Math.max(0, dayData.exercise.hourly-1); saveDay(current); renderExercise(); });
+    if(hp) hp.addEventListener('click', ()=>{ bucket.hourly++; saveDay(current); renderExercise(); });
+    if(hm) hm.addEventListener('click', ()=>{ bucket.hourly = Math.max(0, bucket.hourly-1); saveDay(current); renderExercise(); });
   }
 
-  function openExerciseModal(name){
+  // Shared bottom-sheet modal used for both exercise how-tos and recipe detail.
+  function openInfoModal(title, bodyHtml){
+    document.getElementById('infoModalSheet').innerHTML =
+      '<div class="modal-top"><h3>'+title+'</h3><button class="modal-close" id="modalCloseBtn" aria-label="Close">✕</button></div>'+
+      bodyHtml;
+    document.getElementById('infoModalOverlay').classList.add('open');
+    document.getElementById('modalCloseBtn').addEventListener('click', closeInfoModal);
+  }
+  function closeInfoModal(){
+    document.getElementById('infoModalOverlay').classList.remove('open');
+  }
+  document.getElementById('infoModalOverlay').addEventListener('click', (e)=>{
+    if(e.target.id === 'infoModalOverlay') closeInfoModal();
+  });
+
+  function openExerciseInfo(name){
     const ex = EXERCISE_LIBRARY[name];
     if(!ex) return;
-    const sheet = document.getElementById('exerciseModalSheet');
     const diagram = ex.img
       ? '<img src="'+ex.img+'" alt="'+name+' demonstration" loading="lazy">'
       : poseSVG(ex.pose, ex.hold);
-    sheet.innerHTML =
-      '<div class="modal-top"><h3>'+name+'</h3><button class="modal-close" id="modalCloseBtn" aria-label="Close">✕</button></div>'+
-      '<div class="modal-diagram">'+diagram+'</div>'+
+    const body = '<div class="modal-diagram">'+diagram+'</div>'+
       '<div class="modal-desc">'+ex.desc+'</div>'+
       '<ul class="cue-list">'+ex.cues.map(c=>'<li>'+c+'</li>').join('')+'</ul>';
-    document.getElementById('exerciseModalOverlay').classList.add('open');
-    document.getElementById('modalCloseBtn').addEventListener('click', closeExerciseModal);
+    openInfoModal(name, body);
   }
-  function closeExerciseModal(){
-    document.getElementById('exerciseModalOverlay').classList.remove('open');
+
+  function openRecipeInfo(id){
+    const r = findRecipe(id);
+    if(!r) return;
+    const meta = r.kcal+' kcal &middot; '+r.protein+'g protein &middot; '+r.prepMin+' min prep &middot; serves '+r.servings;
+    const body = '<div class="modal-desc" style="font-family:\'IBM Plex Mono\',monospace; font-size:12.5px; color:var(--ink-soft);">'+meta+'</div>'+
+      '<div class="block-heading" style="margin-top:14px;">Ingredients</div>'+
+      '<ul class="cue-list">'+r.ingredients.map(i=>'<li>'+i+'</li>').join('')+'</ul>'+
+      '<div class="block-heading" style="margin-top:14px;">Steps</div>'+
+      '<ul class="cue-list">'+r.steps.map(s=>'<li>'+s+'</li>').join('')+'</ul>';
+    openInfoModal(r.name, body);
   }
-  document.getElementById('exerciseModalOverlay').addEventListener('click', (e)=>{
-    if(e.target.id === 'exerciseModalOverlay') closeExerciseModal();
-  });
+
+  function notifPermissionLabel(){
+    if(typeof Notification === 'undefined') return 'not supported in this browser';
+    return Notification.permission;
+  }
+
+  function openSettingsModal(){
+    const weekKey = isoWeekKey(current);
+    const generated = loadGeneratedMealPlan(weekKey);
+    const genStatus = generated
+      ? 'Generated '+new Date(generated.generatedAt).toLocaleString()+' for this week.'
+      : 'No AI-generated plan for this week yet — the built-in Steady/Balanced/Higher protein plans are shown instead.';
+
+    const body =
+      '<div class="settings-field">'+
+        '<div class="settings-label">OpenAI API key</div>'+
+        '<input type="password" id="openaiKeyInput" class="num-input" style="width:100%;" placeholder="sk-..." value="'+(openaiKey ? openaiKey.replace(/"/g,'&quot;') : '')+'">'+
+        '<div class="settings-caption">Kept only in memory for this session — cleared on reload or when you close this tab, never saved to disk.</div>'+
+        '<div class="settings-btn-row"><button class="add-food-btn" id="clearKeyBtn" type="button">Clear key</button></div>'+
+      '</div>'+
+      '<div class="settings-field">'+
+        '<div class="settings-label">This week’s meals</div>'+
+        '<div class="settings-caption" id="mealGenStatus">'+genStatus+'</div>'+
+        '<div class="settings-btn-row"><button class="add-food-btn" id="generateMealsBtn" type="button">'+(generated ? 'Regenerate' : 'Generate')+' this week’s meals</button></div>'+
+      '</div>'+
+      '<div class="settings-field">'+
+        '<div class="settings-label">Tracking reminder</div>'+
+        '<div class="settings-row">'+
+          '<button class="toggle-switch'+(settings.reminderEnabled?' on':'')+'" id="reminderToggle" type="button" aria-label="Toggle reminder"><span class="knob"></span></button>'+
+          '<input type="time" id="reminderTimeInput" value="'+settings.reminderTime+'">'+
+        '</div>'+
+        '<div class="settings-caption">Best-effort only: this shows a local notification while the app happens to be open (or briefly backgrounded). It can’t reliably wake your phone if the app isn’t running — there’s no push server behind this.</div>'+
+        '<div class="settings-status" id="notifPermStatus">Notification permission: '+notifPermissionLabel()+'</div>'+
+        '<div class="settings-btn-row"><button class="add-food-btn" id="testNotifBtn" type="button">Send test notification</button></div>'+
+        '<div class="settings-caption" id="testNotifStatus"></div>'+
+      '</div>';
+
+    openInfoModal('Settings', body);
+
+    document.getElementById('openaiKeyInput').addEventListener('input', (e)=>{ openaiKey = e.target.value.trim(); });
+    document.getElementById('clearKeyBtn').addEventListener('click', ()=>{
+      openaiKey = '';
+      document.getElementById('openaiKeyInput').value = '';
+    });
+
+    document.getElementById('generateMealsBtn').addEventListener('click', async (e)=>{
+      const btn = e.currentTarget;
+      const statusEl = document.getElementById('mealGenStatus');
+      btn.disabled = true;
+      statusEl.textContent = 'Generating… this can take a bit.';
+      try{
+        await generateWeeklyMealPlan();
+        openSettingsModal();
+        if(document.getElementById('mealsView').classList.contains('active')) renderMeals();
+      }catch(err){
+        btn.disabled = false;
+        statusEl.textContent = 'Failed: '+err.message;
+      }
+    });
+
+    document.getElementById('reminderToggle').addEventListener('click', async ()=>{
+      if(!settings.reminderEnabled && typeof Notification !== 'undefined' && Notification.permission === 'default'){
+        try{ await Notification.requestPermission(); }catch(e){}
+      }
+      settings.reminderEnabled = !settings.reminderEnabled;
+      saveSettings();
+      openSettingsModal();
+    });
+    document.getElementById('reminderTimeInput').addEventListener('change', (e)=>{
+      settings.reminderTime = e.target.value || '18:00';
+      saveSettings();
+    });
+    document.getElementById('testNotifBtn').addEventListener('click', async ()=>{
+      const statusEl = document.getElementById('testNotifStatus');
+      if(typeof Notification === 'undefined'){ statusEl.textContent = 'Notifications are not supported in this browser.'; return; }
+      if(Notification.permission === 'default'){ await Notification.requestPermission(); }
+      if(Notification.permission !== 'granted'){
+        statusEl.textContent = 'Permission not granted — check your browser/OS notification settings.';
+        document.getElementById('notifPermStatus').textContent = 'Notification permission: '+notifPermissionLabel();
+        return;
+      }
+      if(!navigator.serviceWorker){ statusEl.textContent = 'Service worker unavailable in this browser.'; return; }
+      navigator.serviceWorker.ready.then(reg=>{
+        reg.showNotification('Almanac', {body:'This is a test — reminders will look like this.', icon:'icon-192.png'});
+        statusEl.textContent = 'Sent — check your notifications.';
+      }).catch(()=>{ statusEl.textContent = 'Could not show notification (service worker not ready).'; });
+    });
+  }
 
   const MEAL_SECTIONS = [
     {key:'breakfast', label:'Breakfast'},
@@ -924,6 +1108,174 @@
     {key:'dinner', label:'Dinner'},
     {key:'snacks', label:'Snacks'}
   ];
+
+  // Every recipe here: single serving, 30 minutes of prep or less, no onions, no green peppers.
+  const RECIPE_LIBRARY = {
+    'greek-yogurt-bowl': {
+      name:'Greek Yogurt Bowl', meal:'breakfast', kcal:420, protein:32, prepMin:8, servings:1,
+      ingredients:['1 cup (227g) plain 2% Greek yogurt', '1/3 cup granola', '1/2 cup blueberries', '1 tbsp honey', 'pinch of cinnamon'],
+      steps:['Spoon yogurt into a bowl.', 'Top with granola and blueberries.', 'Drizzle with honey and a pinch of cinnamon.']
+    },
+    'veggie-egg-scramble': {
+      name:'Spinach & Mushroom Egg Scramble', meal:'breakfast', kcal:520, protein:33, prepMin:12, servings:1,
+      ingredients:['3 large eggs', '1 cup baby spinach', '1/2 cup sliced mushrooms', '1/4 cup shredded cheddar', '1 tsp olive oil', '2 slices whole-grain toast with butter', 'salt & pepper'],
+      steps:['Heat olive oil in a nonstick skillet over medium heat. Add mushrooms and cook 3-4 minutes until softened.', 'Add spinach and cook until just wilted, about 1 minute.', 'Whisk eggs with salt and pepper, pour into the skillet, and scramble until just set.', 'Fold in cheddar off the heat. Serve with buttered toast.']
+    },
+    'overnight-oats': {
+      name:'Peanut Butter Overnight Oats', meal:'breakfast', kcal:560, protein:34, prepMin:5, servings:1,
+      ingredients:['1/2 cup rolled oats', '1 scoop (about 25g) vanilla protein powder', '1 cup milk', '2 tbsp peanut butter', '1 tsp chia seeds', '1/2 banana, sliced'],
+      steps:['Stir oats, protein powder, milk, peanut butter, and chia seeds together in a jar.', 'Cover and refrigerate overnight.', 'In the morning, top with sliced banana before eating.']
+    },
+    'turkey-hummus-wrap': {
+      name:'Turkey & Hummus Wrap', meal:'lunch', kcal:520, protein:34, prepMin:10, servings:1,
+      ingredients:['1 large whole-wheat tortilla', '3 tbsp hummus', '4 oz sliced deli turkey', '1/2 cup shredded carrot', 'handful baby spinach', '2 tbsp shredded parmesan'],
+      steps:['Spread hummus over the tortilla.', 'Layer turkey, carrot, spinach, and parmesan down the center.', 'Roll tightly and slice in half.']
+    },
+    'chicken-salad': {
+      name:'Grilled Chicken & Parmesan Salad', meal:'lunch', kcal:620, protein:47, prepMin:15, servings:1,
+      ingredients:['6 oz grilled chicken breast, sliced', '3 cups romaine lettuce, chopped', '3 tbsp shaved parmesan', '1/4 cup cherry tomatoes, halved', '1/4 cup croutons', '1.5 tbsp olive oil', '1 tbsp lemon juice', 'salt & pepper'],
+      steps:['Toss romaine with olive oil, lemon juice, salt, and pepper.', 'Top with sliced chicken, tomatoes, parmesan, and croutons.']
+    },
+    'beef-rice-bowl': {
+      name:'Beef & Rice Bowl with Broccoli', meal:'lunch', kcal:720, protein:50, prepMin:20, servings:1,
+      ingredients:['6 oz lean ground beef', '1.5 cups cooked jasmine rice', '1 cup broccoli florets', '1 tbsp soy sauce', '1 tsp sesame oil', '1 clove garlic, minced', '1 tsp sesame seeds'],
+      steps:['Steam broccoli until bright green and tender, about 5 minutes.', 'Brown ground beef with garlic in a skillet over medium-high heat, breaking it up as it cooks, about 8 minutes.', 'Stir in soy sauce and sesame oil.', 'Serve beef and broccoli over rice, topped with sesame seeds.']
+    },
+    'sheet-pan-chicken': {
+      name:'Sheet-Pan Chicken & Broccoli', meal:'dinner', kcal:650, protein:48, prepMin:25, servings:1,
+      ingredients:['6 oz chicken breast, cubed', '2 cups broccoli florets', '1 cup baby potatoes, halved', '1 tbsp olive oil', '1 tsp paprika', '1 tsp garlic powder', 'salt & pepper'],
+      steps:['Preheat oven to 425°F.', 'Toss chicken, broccoli, and potatoes with olive oil, paprika, garlic powder, salt, and pepper on a sheet pan.', 'Roast for 20-22 minutes, stirring once, until chicken is cooked through and potatoes are tender.']
+    },
+    'turkey-chili': {
+      name:'Turkey Chili', meal:'dinner', kcal:700, protein:50, prepMin:30, servings:1,
+      ingredients:['7 oz ground turkey', '1 cup canned diced tomatoes', '3/4 cup canned kidney beans, drained', '1/2 cup diced carrot', '1/2 cup diced celery', '1 clove garlic, minced', '1 tbsp chili powder', '1/2 tsp cumin', '1/2 cup chicken broth', '2 tbsp shredded cheddar'],
+      steps:['Brown ground turkey with garlic in a pot over medium-high heat, about 6 minutes.', 'Add carrot and celery and cook 4 minutes until starting to soften.', 'Stir in tomatoes, kidney beans, broth, chili powder, and cumin. Simmer uncovered for 15 minutes, stirring occasionally.', 'Top with shredded cheddar before serving.']
+    },
+    'shrimp-stir-fry': {
+      name:'Garlic Shrimp Stir-Fry', meal:'dinner', kcal:680, protein:46, prepMin:20, servings:1,
+      ingredients:['8 oz shrimp, peeled and deveined', '1 cup snap peas', '1 cup sliced carrots', '1.5 cups cooked brown rice', '1 tbsp soy sauce', '1.5 tsp sesame oil', '2 cloves garlic, minced', '1 tsp fresh ginger, grated'],
+      steps:['Heat sesame oil in a wok or large skillet over high heat. Add garlic and ginger and stir for 30 seconds.', 'Add carrots and snap peas, stir-fry 3 minutes.', 'Add shrimp and cook 3-4 minutes until pink and opaque.', 'Stir in soy sauce. Serve over rice.']
+    },
+    'apple-peanut-butter': {
+      name:'Apple with Peanut Butter', meal:'snack', kcal:260, protein:7, prepMin:3, servings:1,
+      ingredients:['1 medium apple, sliced', '2 tbsp peanut butter'],
+      steps:['Slice the apple and serve with peanut butter for dipping.']
+    },
+    'cottage-cheese-pineapple': {
+      name:'Cottage Cheese & Pineapple', meal:'snack', kcal:300, protein:25, prepMin:3, servings:1,
+      ingredients:['1 cup low-fat cottage cheese', '1/2 cup pineapple chunks', '1 tbsp sliced almonds'],
+      steps:['Spoon cottage cheese into a bowl.', 'Top with pineapple chunks and sliced almonds.']
+    },
+    'protein-shake-banana': {
+      name:'Protein Shake with Banana', meal:'snack', kcal:380, protein:30, prepMin:3, servings:1,
+      ingredients:['1 scoop (about 30g) whey protein powder', '1 cup milk', '1 banana', '1 tbsp peanut butter', 'ice cubes'],
+      steps:['Blend protein powder, milk, banana, peanut butter, and a handful of ice until smooth.']
+    }
+  };
+
+  // Full-day plans, each pointing at one recipe per meal slot. Totals land 1800-2400 kcal.
+  const MEAL_PLANS = [
+    {id:'steady', label:'Steady', kcal:1850, protein:121,
+      breakfast:'greek-yogurt-bowl', lunch:'turkey-hummus-wrap', dinner:'sheet-pan-chicken', snacks:'apple-peanut-butter'},
+    {id:'balanced', label:'Balanced', kcal:2140, protein:155,
+      breakfast:'veggie-egg-scramble', lunch:'chicken-salad', dinner:'turkey-chili', snacks:'cottage-cheese-pineapple'},
+    {id:'higher-protein', label:'Higher protein', kcal:2340, protein:160,
+      breakfast:'overnight-oats', lunch:'beef-rice-bowl', dinner:'shrimp-stir-fry', snacks:'protein-shake-banana'}
+  ];
+
+  // ISO-8601 week key (YYYY-Www), used to cache one generated meal plan per calendar week.
+  function isoWeekKey(date){
+    const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    const dayNum = (d.getUTCDay() + 6) % 7; // Mon=0..Sun=6
+    d.setUTCDate(d.getUTCDate() - dayNum + 3); // snap to this week's Thursday
+    const firstThursday = new Date(Date.UTC(d.getUTCFullYear(), 0, 4));
+    const firstDayNum = (firstThursday.getUTCDay() + 6) % 7;
+    firstThursday.setUTCDate(firstThursday.getUTCDate() - firstDayNum + 3);
+    const weekNum = 1 + Math.round((d - firstThursday) / (7 * 86400000));
+    return d.getUTCFullYear() + '-W' + String(weekNum).padStart(2, '0');
+  }
+
+  // Single-shot, strict-JSON prompt for the API call. Distinct from meal_prompts/weekly-meal-plan.txt,
+  // which is written for a human to paste into a chat UI and asks for JS-literal output instead.
+  function buildWeeklyMealPlanPrompt(){
+    return 'Build a 7-day meal plan (Sunday through Saturday) for a single adult. Respond with a single JSON object only — no markdown, no commentary, no code fences.\n\n' +
+      'Fixed constraints:\n' +
+      '- Every meal serves exactly 1 person.\n' +
+      '- Every meal takes 30 minutes or less of active prep and cook time.\n' +
+      '- No onions in any form, anywhere in the week.\n' +
+      '- No green peppers (bell or otherwise), anywhere in the week.\n' +
+      '- Each day totals between 1800 and 2400 kcal, varied across the week rather than identical every day.\n' +
+      '- Each day includes breakfast, lunch, dinner, and one snack.\n' +
+      '- Favor ingredients that repeat across multiple meals in the week so the resulting grocery list stays short.\n' +
+      '- Vary protein sources and cuisines across the week.\n\n' +
+      'Respond with exactly this JSON shape:\n' +
+      '{"days":[{"kcal":0,"protein":0,"breakfast":"recipe-id","lunch":"recipe-id","dinner":"recipe-id","snacks":"recipe-id"}, ...exactly 7 entries, Sunday through Saturday],' +
+      '"recipes":{"recipe-id":{"name":"Recipe Name","meal":"breakfast","kcal":0,"protein":0,"prepMin":0,"servings":1,"ingredients":["quantity + ingredient"],"steps":["Step one."]}}}\n\n' +
+      'Every recipe id referenced in "days" must have a matching entry in "recipes". "meal" must be one of breakfast/lunch/dinner/snack. ' +
+      'Reuse the same recipe id across multiple days where that is the intent, rather than duplicating near-identical recipes under different ids. ' +
+      'Double-check the full week contains no onion and no green pepper before responding.';
+  }
+
+  async function callOpenAI(promptText){
+    if(!openaiKey) throw new Error('Paste your OpenAI API key in Settings first.');
+    const res = await fetch('https://api.openai.com/v1/chat/completions', {
+      method:'POST',
+      headers:{'Content-Type':'application/json', 'Authorization':'Bearer '+openaiKey},
+      body: JSON.stringify({
+        model:'gpt-4o-mini',
+        response_format:{type:'json_object'},
+        messages:[
+          {role:'system', content:'You are a meal-planning assistant. Always respond with a single valid JSON object matching the schema the user requests, and nothing else.'},
+          {role:'user', content: promptText}
+        ]
+      })
+    });
+    if(!res.ok){
+      if(res.status === 401) throw new Error('OpenAI rejected the key (401) — double-check it in Settings.');
+      let detail = '';
+      try{ detail = (await res.json()).error?.message || ''; }catch(e){}
+      throw new Error('OpenAI request failed ('+res.status+')'+(detail ? ': '+detail : ''));
+    }
+    const data = await res.json();
+    const content = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
+    if(!content) throw new Error('OpenAI returned no content.');
+    try{ return JSON.parse(content); }catch(e){ throw new Error('OpenAI response was not valid JSON.'); }
+  }
+
+  const FORBIDDEN_INGREDIENTS = ['onion', 'green pepper'];
+
+  function validateGeneratedPlan(json){
+    if(!json || !Array.isArray(json.days) || json.days.length !== 7) throw new Error('Generated plan is missing a full 7-day "days" array.');
+    if(!json.recipes || typeof json.recipes !== 'object') throw new Error('Generated plan is missing a "recipes" object.');
+    const sections = ['breakfast','lunch','dinner','snacks'];
+    json.days.forEach((day, i)=>{
+      sections.forEach(key=>{
+        const id = day && day[key];
+        if(!id || !json.recipes[id]) throw new Error('Day '+i+' references a missing recipe for '+key+'.');
+      });
+    });
+    Object.keys(json.recipes).forEach(id=>{
+      const text = (json.recipes[id].ingredients || []).join(' ').toLowerCase();
+      FORBIDDEN_INGREDIENTS.forEach(bad=>{
+        if(text.indexOf(bad) !== -1) throw new Error('Recipe "'+id+'" contains a forbidden ingredient ('+bad+') — try regenerating.');
+      });
+    });
+  }
+
+  async function generateWeeklyMealPlan(){
+    const weekKey = isoWeekKey(current);
+    const json = await callOpenAI(buildWeeklyMealPlanPrompt());
+    validateGeneratedPlan(json);
+    const cached = {weekKey, generatedAt: Date.now(), days: json.days, recipes: json.recipes};
+    lsSet('generatedMealPlan:'+weekKey, JSON.stringify(cached));
+    return cached;
+  }
+
+  function loadGeneratedMealPlan(weekKey){
+    const raw = lsGet('generatedMealPlan:'+weekKey);
+    if(!raw) return null;
+    try{ return JSON.parse(raw); }catch(e){ return null; }
+  }
 
   function mealTotals(){
     let kcal = 0, protein = 0;
@@ -936,10 +1288,27 @@
     return {kcal, protein};
   }
 
+  function findRecipe(id){
+    if(RECIPE_LIBRARY[id]) return RECIPE_LIBRARY[id];
+    const gen = loadGeneratedMealPlan(isoWeekKey(current));
+    return gen ? gen.recipes[id] : null;
+  }
+
+  function mealPlanRowHtml(section, recipeId, recipe){
+    return '<div class="meal-row"><div class="fname">'+section.label+' &middot; '+recipe.name+'</div>'+
+      '<div class="fmeta">'+recipe.kcal+' kcal &middot; '+recipe.protein+'g</div>'+
+      '<button class="info-btn" data-recipe="'+recipeId+'" aria-label="View '+recipe.name+' recipe">i</button>'+
+      '<button class="add-food-btn" data-log-recipe="'+recipeId+'" data-log-name="'+recipe.name+'" data-log-kcal="'+recipe.kcal+'" data-log-protein="'+recipe.protein+'" data-log-section="'+section.key+'">Log</button>'+
+    '</div>';
+  }
+
   function renderMeals(){
     const totals = mealTotals();
     const goal = settings.calorieGoal || 2000;
     const pct = Math.max(0, Math.min(100, Math.round((totals.kcal / goal) * 100)));
+    const weekKey = isoWeekKey(current);
+    const generated = loadGeneratedMealPlan(weekKey);
+    const generatedDay = generated ? generated.days[current.getDay()] : null;
 
     let html = '';
     html += '<div class="card">';
@@ -949,6 +1318,35 @@
     html += '<div class="goal-row" style="margin-top:8px;"><span style="font-size:12.5px; color:var(--ink-soft);">Goal</span>'+
       '<input type="number" id="calorieGoalInput" value="'+goal+'" inputmode="numeric" step="50">'+
       '<span style="font-size:12.5px; color:var(--ink-soft);">kcal &middot; '+totals.protein+'g protein logged</span></div>';
+    html += '</div>';
+
+    html += '<div class="card">';
+    if(generatedDay){
+      html += '<div class="card-top"><div class="card-title"><span class="dot moss"></span><span>This week\u2019s meals</span></div>'+
+        '<div class="card-value">'+generatedDay.kcal+' kcal &middot; '+generatedDay.protein+'g protein</div></div>';
+      html += '<div class="settings-caption" style="margin-top:0; margin-bottom:8px;">AI-generated '+new Date(generated.generatedAt).toLocaleDateString()+' for this week</div>';
+      MEAL_SECTIONS.forEach(section=>{
+        const recipeId = generatedDay[section.key];
+        const recipe = generated.recipes[recipeId];
+        if(!recipe) return;
+        html += mealPlanRowHtml(section, recipeId, recipe);
+      });
+      html += '<div class="settings-btn-row"><button class="add-food-btn" id="regenerateMealsBtn" type="button">Regenerate this week</button></div>';
+      html += '<div class="settings-caption" id="regenerateStatus"></div>';
+    } else {
+      const mealPlan = MEAL_PLANS.find(p=>p.id===settings.mealPlan) || MEAL_PLANS[0];
+      html += '<div class="card-top"><div class="card-title"><span class="dot moss"></span><span>Meal plan</span></div>'+
+        '<div class="card-value">'+mealPlan.kcal+' kcal &middot; '+mealPlan.protein+'g protein</div></div>';
+      html += '<div class="chips" id="mealPlanChips" style="margin-top:0; margin-bottom:4px;">'+
+        MEAL_PLANS.map(p=>'<div class="chip'+(p.id===mealPlan.id?' active':'')+'" data-meal-plan="'+p.id+'">'+p.label+'</div>').join('')+
+      '</div>';
+      MEAL_SECTIONS.forEach(section=>{
+        const recipeId = mealPlan[section.key];
+        const recipe = RECIPE_LIBRARY[recipeId];
+        if(!recipe) return;
+        html += mealPlanRowHtml(section, recipeId, recipe);
+      });
+    }
     html += '</div>';
 
     MEAL_SECTIONS.forEach(section=>{
@@ -983,6 +1381,51 @@
       renderMeals();
     });
 
+    const regenBtn = document.getElementById('regenerateMealsBtn');
+    if(regenBtn) regenBtn.addEventListener('click', async (e)=>{
+      const btn = e.currentTarget;
+      const statusEl = document.getElementById('regenerateStatus');
+      btn.disabled = true;
+      statusEl.textContent = 'Generating… this can take a bit.';
+      try{
+        await generateWeeklyMealPlan();
+        renderMeals();
+      }catch(err){
+        btn.disabled = false;
+        statusEl.textContent = 'Failed: '+err.message;
+      }
+    });
+
+    document.querySelectorAll('#mealPlanChips .chip').forEach(el=>{
+      el.addEventListener('click', ()=>{
+        const id = el.getAttribute('data-meal-plan');
+        if(id === settings.mealPlan) return;
+        settings.mealPlan = id;
+        saveSettings();
+        renderMeals();
+      });
+    });
+
+    document.querySelectorAll('.info-btn[data-recipe]').forEach(el=>{
+      el.addEventListener('click', ()=>{
+        openRecipeInfo(el.getAttribute('data-recipe'));
+      });
+    });
+
+    document.querySelectorAll('[data-log-recipe]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const section = btn.getAttribute('data-log-section');
+        dayData.meals[section].push({
+          id: Date.now().toString(36) + Math.random().toString(36).slice(2,6),
+          name: btn.getAttribute('data-log-name'),
+          kcal: parseInt(btn.getAttribute('data-log-kcal'), 10),
+          protein: parseInt(btn.getAttribute('data-log-protein'), 10)
+        });
+        saveDay(current);
+        renderMeals();
+      });
+    });
+
     document.querySelectorAll('.meal-del').forEach(btn=>{
       btn.addEventListener('click', ()=>{
         const meal = btn.getAttribute('data-meal');
@@ -993,7 +1436,7 @@
       });
     });
 
-    document.querySelectorAll('.add-food-btn').forEach(btn=>{
+    document.querySelectorAll('.add-food-btn[data-meal]').forEach(btn=>{
       btn.addEventListener('click', ()=>{
         const meal = btn.getAttribute('data-meal');
         const nameEl = document.getElementById('name-'+meal);
@@ -1068,9 +1511,37 @@
       metricBlock('Movement','amber', movementVals, 'min', v=>Math.round(v));
   }
 
+  function isTodayLogged(){
+    const raw = lsGet('log:'+keyFor(new Date()));
+    if(!raw) return false;
+    let d;
+    try{ d = JSON.parse(raw); }catch(e){ return false; }
+    return !!(d.weight || d.water>0 || d.sleep || d.mood || d.movement);
+  }
+
+  // Best-effort: only fires while this tab/app happens to be running (no push server behind it).
+  function checkReminder(){
+    if(!settings.reminderEnabled) return;
+    if(typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
+    if(!navigator.serviceWorker) return;
+    const now = new Date();
+    const nowClock = pad(now.getHours())+':'+pad(now.getMinutes());
+    const todayKey = keyFor(now);
+    if(settings.lastReminderDate === todayKey) return;
+    if(nowClock < settings.reminderTime) return;
+    if(isTodayLogged()) return;
+    navigator.serviceWorker.ready.then(reg=>{
+      reg.showNotification('Almanac', {body:'Haven’t logged today yet — a minute now beats a blank day.', icon:'icon-192.png'});
+    }).catch(()=>{});
+    settings.lastReminderDate = todayKey;
+    saveSettings();
+  }
+
   (async function init(){
     await loadSettings();
     await goTo(new Date());
+    checkReminder();
+    setInterval(checkReminder, 60000);
   })();
 
   if('serviceWorker' in navigator){
