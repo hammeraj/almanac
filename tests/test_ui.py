@@ -88,6 +88,11 @@ def run():
                 page.wait_for_timeout(200)
                 check(page.is_visible("#arcSvg"), "meals tab shows tracker")
 
+                page.click("#tabPlan")
+                page.wait_for_timeout(200)
+                check(page.is_visible("#planContent .exercise-head"), "plan tab renders")
+                check(not page.is_visible("#arcSvg"), "plan tab hides the daily tracker")
+
                 page.click("#tabExercise")
                 page.wait_for_timeout(200)
                 info_btn = page.query_selector(".info-btn")
