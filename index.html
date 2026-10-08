@@ -291,6 +291,75 @@
   @media (prefers-reduced-motion: reduce){
     .pose-move{ animation: none !important; }
   }
+
+  /* Daily journal refresh */
+  button,input{font:inherit;}
+  button{cursor:pointer;}
+  button:focus-visible,input:focus-visible{outline:3px solid var(--moss);outline-offset:3px;}
+  .header{margin-bottom:18px;}
+  .header>.eyebrow{font-family:'Fraunces',serif;font-size:24px;letter-spacing:-.04em;text-transform:none;color:var(--ink);}
+  .settings-btn,.date-nav button{width:44px;height:44px;}
+  .today-pill{min-height:44px;font-size:12px;}
+  .date-nav{gap:16px;}
+  .date-label{font-family:'Fraunces',serif;font-size:23px;}
+  .arc-wrap{margin:16px 0 20px;flex-direction:row;justify-content:center;gap:12px;padding:12px;background:var(--moss-light);border-radius:16px;}
+  #arcSvg{width:110px;height:56px;flex-shrink:0;}
+  .arc-caption{font-size:12px;line-height:1.5;max-width:170px;margin:0;}
+  .daily-overview{margin-bottom:22px;}
+  .daily-overview h2{font-size:28px;letter-spacing:-.03em;margin-bottom:6px;}
+  .overview-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .overview-link{display:flex;flex-direction:column;align-items:flex-start;text-align:left;border:1px solid var(--line);border-radius:16px;padding:14px;background:var(--card);color:var(--ink);gap:8px;}
+  .overview-link svg{width:20px;height:20px;color:var(--moss);}
+  .overview-label{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft);}
+  .overview-title{font-size:14px;font-weight:500;line-height:1.4;}
+  .overview-detail{font-size:11px;color:var(--ink-soft);line-height:1.5;}
+  .section-heading{display:flex;align-items:baseline;justify-content:space-between;margin:0 0 12px;}
+  .section-heading h3{font-size:21px;}
+  .section-heading span{font-size:11px;color:var(--ink-soft);}
+  .card{box-shadow:0 3px 12px rgba(30,42,34,.025);padding:16px;}
+  .habit-icon{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:11px;background:var(--moss-light);color:var(--moss);}
+  .habit-icon svg{width:20px;height:20px;}
+  .habit-icon.amber{background:var(--amber-light);color:#916022;}
+  .habit-icon.rose{background:var(--rose-light);color:var(--rose);}
+  .card-top{margin-bottom:14px;}
+  .stepper button{width:44px;height:44px;}
+  .cups{gap:3px;}
+  .stepper .cup{width:23px;height:44px;position:relative;border:0;border-radius:0;background:transparent;transition:color .2s;color:var(--moss);}
+  .cup:before{content:'';position:absolute;inset:10px 2px;border:1.5px solid currentColor;border-radius:3px 3px 7px 7px;background:linear-gradient(to top,var(--moss) 50%,transparent 50%);background-size:100% 200%;background-position:top;transition:background-position .25s ease;}
+  .cup.filled{background:transparent;}
+  .cup.filled:before{background-position:bottom;}
+  .num-input{min-height:44px;}
+  .chip{font-family:'Inter',sans-serif;min-height:44px;transition:background .18s,border-color .18s;}
+  .mood-btn{min-height:62px;transition:background .18s,border-color .18s;}
+  .unit-toggle button{min-height:44px;}
+  .tabbar{z-index:10;background:transparent;}
+  .tabbar-inner{max-width:406px;padding:8px;gap:2px;margin:0 12px 10px;background:var(--card);border:1px solid var(--line);border-radius:22px;box-shadow:0 6px 28px rgba(30,42,34,.1);}
+  .tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border:0;border-radius:14px;min-height:56px;padding:7px 2px;font-size:10px;font-family:'Inter',sans-serif;transition:background .18s,color .18s;}
+  .tab svg{width:20px;height:20px;}
+  .tab.active{background:var(--moss-light);color:var(--moss);font-weight:600;}
+  @media(max-width:359px){#app{padding-left:12px;padding-right:12px;}.stepper{gap:6px;}.cups{gap:0;}.stepper .cup{width:22px;}.mood-row{gap:4px;}.date-label{font-size:21px;}}
+  @media(prefers-reduced-motion:reduce){*,*:before{animation:none!important;transition:none!important;}}
+
+
+  #focusToday h2{font-size:26px;margin:0 0 14px;}
+  #focusToday .card h3{font-size:20px;margin-bottom:12px;}
+  .action-button{width:100%;min-height:46px;border:1px solid var(--moss);border-radius:12px;background:var(--card);color:var(--moss);padding:10px;margin-top:12px;text-align:left;font-size:14px;}
+  .action-button[aria-pressed="true"]{background:var(--moss-light);}
+  .energy-picker{display:flex;gap:8px;margin-bottom:12px;}
+  .energy-picker .chip{flex:1;}
+  .default-meal{display:flex;gap:8px;align-items:center;font-size:13px;line-height:1.5;padding:8px 0;border-bottom:1px solid var(--line);}
+  .default-meal span{flex:1;}
+  .default-meal button{min-height:44px;border:0;background:none;color:var(--moss);text-decoration:underline;padding:8px;}
+  .focus-link{display:inline-block;min-height:44px;border:0;background:none;color:var(--moss);text-decoration:underline;padding:10px 0;font-size:13px;}
+  #otherLogs{margin:4px 0 16px;}
+  #otherLogs summary{padding:14px 0;cursor:pointer;font-size:14px;}
+  .progress-stats{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:12px 0;}
+  .progress-stats strong{display:block;font-family:'Fraunces',serif;font-size:25px;font-weight:500;}
+  .progress-stats span,.review-line{font-size:12px;color:var(--ink-soft);line-height:1.6;}
+  .week-average{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-top:1px solid var(--line);font-size:12px;}
+  .default-editor select{width:100%;min-height:44px;border:1px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink);padding:8px;margin:6px 0 14px;}
+  #dailyGoalInput{width:90px;min-height:44px;}
+  .progress-track{margin-top:14px;}
 </style>
 </head>
 <body>
@@ -316,14 +385,15 @@
   </div>
 
   <div id="todayView" class="view active">
-
+    <section id="focusToday" aria-label="Daily actions"></section>
+    <div class="section-heading"><h3>Measurements</h3><span>Optional</span></div>
     <div class="card">
       <div class="card-top">
-        <div class="card-title"><span class="dot moss"></span><span>Weight</span></div>
+        <div class="card-title"><span class="habit-icon moss"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 5h12a2 2 0 0 1 2 2v12H4V7a2 2 0 0 1 2-2Z"/><path d="M8 9a5 5 0 0 1 8 0M12 8v3"/></svg></span><span>Weight</span></div>
         <div class="card-value" id="weightVal">—</div>
       </div>
       <div class="num-row">
-        <input class="num-input" id="weightInput" type="number" inputmode="decimal" step="0.1" placeholder="e.g. 168.4">
+        <input class="num-input" aria-label="Weight" id="weightInput" type="number" inputmode="decimal" step="0.1" placeholder="e.g. 168.4">
         <div class="unit-toggle">
           <button id="unitLb">lb</button><button id="unitKg">kg</button>
         </div>
@@ -331,43 +401,50 @@
     </div>
 
     <div class="card">
+      <label for="waistInput">Waist <span class="eyebrow">inches</span></label>
+      <input class="num-input" id="waistInput" type="number" min="1" max="120" step="0.1" inputmode="decimal" placeholder="Optional weekly measurement" style="margin-top:12px;">
+      <div class="note">Measure at the same location and time each week.</div>
+    </div>
+    <details id="otherLogs"><summary>Other daily logs</summary>
+    <div class="card">
       <div class="card-top">
-        <div class="card-title"><span class="dot moss"></span><span>Water</span></div>
+        <div class="card-title"><span class="habit-icon moss"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3s-7 8-7 12a7 7 0 0 0 14 0c0-4-7-12-7-12Z"/><path d="M8 15a4 4 0 0 0 4 4"/></svg></span><span>Water</span></div>
         <div class="card-value" id="waterVal">0 <span style="color:var(--ink-soft)">/ 8 cups</span></div>
       </div>
       <div class="stepper">
-        <button id="waterMinus">−</button>
+        <button id="waterMinus" aria-label="Remove a cup of water">−</button>
         <div class="cups" id="cupsRow"></div>
-        <button id="waterPlus">+</button>
+        <button id="waterPlus" aria-label="Add a cup of water">+</button>
       </div>
     </div>
 
     <div class="card">
       <div class="card-top">
-        <div class="card-title"><span class="dot amber"></span><span>Sleep</span></div>
+        <div class="card-title"><span class="habit-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14A8 8 0 0 1 10 4a8 8 0 1 0 10 10Z"/></svg></span><span>Sleep</span></div>
         <div class="card-value" id="sleepVal">— <span style="color:var(--ink-soft)">hrs</span></div>
       </div>
-      <input class="num-input" id="sleepInput" type="number" inputmode="decimal" step="0.5" placeholder="hours">
+      <input class="num-input" aria-label="Sleep" id="sleepInput" type="number" inputmode="decimal" step="0.5" placeholder="hours">
       <div class="chips" id="sleepChips"></div>
     </div>
 
     <div class="card">
       <div class="card-top">
-        <div class="card-title"><span class="dot rose"></span><span>Mood</span></div>
+        <div class="card-title"><span class="habit-icon rose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 14s1 3 4 3 4-3 4-3M8 9h.01M16 9h.01"/></svg></span><span>Mood</span></div>
       </div>
       <div class="mood-row" id="moodRow"></div>
     </div>
 
     <div class="card">
       <div class="card-top">
-        <div class="card-title"><span class="dot amber"></span><span>Movement</span></div>
+        <div class="card-title"><span class="habit-icon amber"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 17 5-6 4 3 7-9M15 5h5v5"/></svg></span><span>Movement</span></div>
         <div class="card-value" id="movementVal">— <span style="color:var(--ink-soft)">min</span></div>
       </div>
-      <input class="num-input" id="movementInput" type="number" inputmode="numeric" step="5" placeholder="minutes">
+      <input class="num-input" aria-label="Movement" id="movementInput" type="number" inputmode="numeric" step="5" placeholder="minutes">
       <div class="chips" id="movementChips"></div>
     </div>
 
-    <div class="note">Entries save automatically and stay on this device.</div>
+    </details>
+    <div class="note" id="saveStatus" role="status">Entries stay on this device.</div>
   </div>
 
   <div id="exerciseView" class="view">
@@ -393,13 +470,13 @@
 </div>
 
 <div class="tabbar">
-  <div class="tabbar-inner">
-    <div class="tab active" id="tabToday">Today</div>
-    <div class="tab" id="tabExercise">Exercise</div>
-    <div class="tab" id="tabMeals">Meals</div>
-    <div class="tab" id="tabPlan">Plan</div>
-    <div class="tab" id="tabTrends">Trends</div>
-  </div>
+  <nav class="tabbar-inner" aria-label="Main navigation">
+    <button type="button" class="tab active" id="tabToday" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="16" rx="3"/><path d="M8 3v4M16 3v4M4 11h16M8 15h3M8 18h6"/></svg><span>Today</span></button>
+    <button type="button" class="tab" id="tabExercise" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 4 14 14M3 7l4-4M17 21l4-4M3 11l8-8M13 21l8-8"/></svg><span>Exercise</span></button>
+    <button type="button" class="tab" id="tabMeals" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3v7a3 3 0 0 0 6 0V3M8 3v18M19 3c-4 3-4 8 0 9v9M19 3v9"/></svg><span>Meals</span></button>
+    <button type="button" class="tab" id="tabPlan" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 3h6v4H9zM9 12h6M9 16h6"/></svg><span>Plan</span></button>
+    <button type="button" class="tab" id="tabTrends" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4v16h16M8 16v-4M12 16V8M16 16V5"/></svg><span>Trends</span></button>
+  </nav>
 </div>
 
 <script>
@@ -485,7 +562,7 @@
   const EXERCISE_PLANS = {
     'desk-job': {
       label: 'Desk job',
-      whyNote: 'Extra attention on calves, ankles, and glutes throughout \u2014 that\u2019s where a little consistent work tends to pay off most for hip, back, and ankle comfort.',
+      whyNote: 'Focus: calves, ankles, and glutes.',
       morning: MORNING_ROUTINE,
       weekly: WEEKLY_EXERCISE
     }
@@ -612,14 +689,14 @@
   let current = new Date();
   let settings = {
     unit:'lb', waterGoal:8, calorieGoal:2000, exercisePlan:DEFAULT_EXERCISE_PLAN, mealPlan:'steady',
-    reminderEnabled:false, reminderTime:'18:00', lastReminderDate:null, dietaryNotes:''
+    reminderEnabled:false, reminderTime:'18:00', lastReminderDate:null, dietaryNotes:'', weightLossGoalLb:20, mealDefaults:null
   };
   let dayData = defaultDay();
   // Never persisted (not part of `settings`/localStorage) — cleared on reload by design.
   let openaiKey = '';
 
   function defaultDay(){
-    return {weight:null, water:0, sleep:null, mood:null, movement:null, exercise:{plans:{}},
+    return {waist:null, energy:null, foodOnPlan:false, movementDone:false, weight:null, water:0, sleep:null, mood:null, movement:null, exercise:{plans:{}},
       meals:{breakfast:[], lunch:[], dinner:[], snacks:[]}};
   }
 
@@ -674,13 +751,15 @@
   async function loadDay(d){
     const raw = lsGet('log:'+keyFor(d));
     try{
-      dayData = raw ? JSON.parse(raw) : defaultDay();
+      dayData = raw ? Object.assign(defaultDay(), JSON.parse(raw)) : defaultDay();
     }catch(e){ dayData = defaultDay(); }
     if(!dayData.exercise) dayData.exercise = {plans:{}};
     if(!dayData.meals) dayData.meals = {breakfast:[], lunch:[], dinner:[], snacks:[]};
   }
   async function saveDay(d){
-    lsSet('log:'+keyFor(d), JSON.stringify(dayData));
+    const saved = lsSet('log:'+keyFor(d), JSON.stringify(dayData));
+    document.getElementById('saveStatus').textContent = saved ? 'Saved on this device.' : 'Could not save. Check available device storage.';
+    return saved;
   }
 
   function completion(){
@@ -707,12 +786,10 @@
   }
 
   function renderTodayArc(){
-    const n = completion(), total = 5;
+    const n = Number(!!dayData.foodOnPlan)+Number(!!dayData.movementDone), total = 2;
     drawArc(n, total);
     const caption = document.getElementById('arcCaption');
-    if(n===total) caption.innerHTML = '<b>All five</b> logged — nicely done';
-    else if(n>0) caption.innerHTML = '<b>'+n+'</b> of 5 habits logged';
-    else caption.innerHTML = '';
+    caption.innerHTML = '<b>'+n+'</b> of '+total+' actions completed';
   }
 
   function renderExerciseArc(){
@@ -726,9 +803,7 @@
     const total = plan.morning.length + day.items.length;
     drawArc(n, total);
     const caption = document.getElementById('arcCaption');
-    if(total>0 && n===total) caption.innerHTML = '<b>All done</b> — nice work';
-    else if(n>0) caption.innerHTML = '<b>'+n+'</b> of '+total+' exercises done';
-    else caption.innerHTML = '';
+    caption.innerHTML = '<b>'+n+'</b> of '+total+' exercises done';
   }
 
   function renderMealsArc(){
@@ -747,8 +822,9 @@
   }
 
   function renderWeight(){
-    document.getElementById('weightInput').value = dayData.weight ?? '';
-    document.getElementById('weightVal').innerHTML = dayData.weight ? ('<b>'+dayData.weight+'</b> '+settings.unit) : '—';
+    const value = dayData.weight ? weightInUnit(dayData, settings.unit) : null;
+    document.getElementById('weightInput').value = value==null ? '' : Number(value.toFixed(1));
+    document.getElementById('weightVal').innerHTML = dayData.weight ? ('<b>'+Number(value.toFixed(1))+'</b> '+settings.unit) : '—';
     document.getElementById('unitLb').className = settings.unit==='lb' ? 'active' : '';
     document.getElementById('unitKg').className = settings.unit==='kg' ? 'active' : '';
   }
@@ -760,7 +836,8 @@
     for(let i=1;i<=goal;i++){
       const c = document.createElement('button');
       c.className = 'cup' + (i<=dayData.water ? ' filled' : '');
-      c.setAttribute('aria-label','cup '+i);
+      c.setAttribute('aria-label','Log '+i+' '+(i===1?'cup':'cups')+' of water');
+      c.setAttribute('aria-pressed', String(i<=dayData.water));
       c.addEventListener('click', ()=>{
         dayData.water = (dayData.water===i) ? i-1 : i;
         persistAndRerender();
@@ -776,9 +853,10 @@
     const wrap = document.getElementById('sleepChips');
     wrap.innerHTML = '';
     SLEEP_CHIPS.forEach(v=>{
-      const c = document.createElement('div');
+      const c = document.createElement('button');
       c.className = 'chip' + (dayData.sleep===v ? ' active':'');
       c.textContent = v+'h';
+      c.setAttribute('aria-pressed', String(dayData.sleep===v));
       c.addEventListener('click', ()=>{ dayData.sleep = v; persistAndRerender(); });
       wrap.appendChild(c);
     });
@@ -788,9 +866,10 @@
     const row = document.getElementById('moodRow');
     row.innerHTML = '';
     MOODS.forEach(m=>{
-      const b = document.createElement('div');
+      const b = document.createElement('button');
       b.className = 'mood-btn' + (dayData.mood===m.key ? ' active':'');
-      b.innerHTML = '<div class="bar"></div>'+m.label;
+      b.innerHTML = '<span class="bar" style="display:block"></span>'+m.label;
+      b.setAttribute('aria-pressed', String(dayData.mood===m.key));
       b.addEventListener('click', ()=>{ dayData.mood = (dayData.mood===m.key ? null : m.key); persistAndRerender(); });
       row.appendChild(b);
     });
@@ -802,16 +881,18 @@
     const wrap = document.getElementById('movementChips');
     wrap.innerHTML = '';
     MOVEMENT_CHIPS.forEach(v=>{
-      const c = document.createElement('div');
+      const c = document.createElement('button');
       c.className = 'chip' + (dayData.movement===v ? ' active':'');
       c.textContent = v+' min';
+      c.setAttribute('aria-pressed', String(dayData.movement===v));
       c.addEventListener('click', ()=>{ dayData.movement = v; persistAndRerender(); });
       wrap.appendChild(c);
     });
   }
 
+
   function renderAll(){
-    renderHeader(); renderTodayArc(); renderWeight(); renderWater(); renderSleep(); renderMood(); renderMovement();
+    renderHeader(); renderFocusToday(); renderTodayArc(); renderWeight(); renderWater(); renderSleep(); renderMood(); renderMovement();
   }
 
   async function persistAndRerender(){
@@ -838,7 +919,8 @@
 
   document.getElementById('weightInput').addEventListener('change', (e)=>{
     const v = parseFloat(e.target.value);
-    dayData.weight = isNaN(v) ? null : v;
+    dayData.weight = Number.isFinite(v) && v>0 ? v : null;
+    dayData.weightUnit = settings.unit;
     persistAndRerender();
   });
   document.getElementById('sleepInput').addEventListener('change', (e)=>{
@@ -878,14 +960,16 @@
   const allViews = [todayView, exerciseView, mealsView, planView, trendsView];
 
   function activateTab(tab, view){
-    allTabs.forEach(t=>t.classList.remove('active'));
+    allTabs.forEach(t=>{t.classList.remove('active');t.setAttribute('aria-pressed','false');});
     allViews.forEach(v=>v.classList.remove('active'));
-    tab.classList.add('active'); view.classList.add('active');
+    tab.classList.add('active'); tab.setAttribute('aria-pressed','true'); view.classList.add('active');
   }
 
+
   tabToday.addEventListener('click', ()=>{
+    renderFocusToday();
     activateTab(tabToday, todayView);
-    arcWrap.style.display=''; dateNav.style.display='';
+    arcWrap.style.display='none'; dateNav.style.display='';
     renderTodayArc();
   });
   tabExercise.addEventListener('click', ()=>{
@@ -1343,6 +1427,7 @@
   // Single source of truth for "what week is actually in effect" — an AI-generated week if
   // one's cached for weekKey, otherwise the currently-selected static plan (used every day).
   function weekMealSource(weekKey){
+    if(settings.mealDefaults) return {source:'static', mealPlan:defaultMenu()};
     const generated = loadGeneratedMealPlan(weekKey);
     if(generated) return {source:'generated', generated};
     const mealPlan = MEAL_PLANS.find(p=>p.id===settings.mealPlan) || MEAL_PLANS[0];
@@ -1365,7 +1450,7 @@
     const source = weekMealSource(weekKey);
     const generatedDay = source.source==='generated' ? source.generated.days[current.getDay()] : null;
 
-    let html = '';
+    let html = '<div class="note">Recipe calories are estimates. The calorie goal below is optional and is not a personalized target.</div>';
     html += '<div class="card">';
     html += '<div class="card-top"><div class="card-title"><span class="dot amber"></span><span>Today\u2019s total</span></div>'+
       '<div class="card-value"><b>'+totals.kcal+'</b> kcal</div></div>';
@@ -1456,6 +1541,7 @@
         const id = el.getAttribute('data-meal-plan');
         if(id === settings.mealPlan) return;
         settings.mealPlan = id;
+        settings.mealDefaults = null;
         saveSettings();
         renderMeals();
       });
@@ -1667,9 +1753,11 @@
         entries.push({date:d, data: defaultDay()});
       }
     }
+    const progress = progressHtml();
     const anyData = entries.some(e => e.data.weight || e.data.water>0 || e.data.sleep || e.data.mood || e.data.movement);
     if(!anyData){
-      container.innerHTML = '<div class="empty">Log a few days on the Today tab<br>and your trends will show up here.</div>';
+      container.innerHTML = progress;
+      wireGoal();
       return;
     }
 
@@ -1690,19 +1778,20 @@
     }
     function dotColor(cls){ return cls==='moss' ? '#3F6D53' : cls==='amber' ? '#C98A3C' : '#AD6274'; }
 
-    const weightVals = entries.map(e=>e.data.weight);
+    const weightVals = entries.map(e=>e.data.weight ? weightInUnit(e.data, settings.unit) : null);
     const waterVals = entries.map(e=>e.data.water);
     const sleepVals = entries.map(e=>e.data.sleep);
     const movementVals = entries.map(e=>e.data.movement);
     const moodScore = {low:1, meh:2, okay:3, good:4, great:5};
     const moodVals = entries.map(e=> e.data.mood ? moodScore[e.data.mood] : null);
 
-    container.innerHTML =
+    container.innerHTML = progress +
       metricBlock('Weight','moss', weightVals, settings.unit, v=>v.toFixed(1)) +
       metricBlock('Water','moss', waterVals, 'cups', v=>v.toFixed(1)) +
       metricBlock('Sleep','amber', sleepVals, 'hrs', v=>v.toFixed(1)) +
       metricBlock('Mood','rose', moodVals, '/5', v=>v.toFixed(1)) +
       metricBlock('Movement','amber', movementVals, 'min', v=>Math.round(v));
+    wireGoal();
   }
 
   function isTodayLogged(){
@@ -1710,7 +1799,7 @@
     if(!raw) return false;
     let d;
     try{ d = JSON.parse(raw); }catch(e){ return false; }
-    return !!(d.weight || d.water>0 || d.sleep || d.mood || d.movement);
+    return !!(d.foodOnPlan || d.movementDone || d.weight || d.waist || d.water>0 || d.sleep || d.mood || d.movement);
   }
 
   // Best-effort: only fires while this tab/app happens to be running (no push server behind it).
@@ -1725,15 +1814,182 @@
     if(nowClock < settings.reminderTime) return;
     if(isTodayLogged()) return;
     navigator.serviceWorker.ready.then(reg=>{
-      reg.showNotification('Almanac', {body:'Haven’t logged today yet — a minute now beats a blank day.', icon:'icon-192.png'});
+      reg.showNotification('Almanac', {body:'No entries logged today.', icon:'icon-192.png'});
     }).catch(()=>{});
     settings.lastReminderDate = todayKey;
     saveSettings();
   }
 
+  function escapeText(value){
+    return String(value).replace(/[&<>"']/g, char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+  }
+
+  function defaultMenu(){
+    const base = MEAL_PLANS.find(p=>p.id===settings.mealPlan) || MEAL_PLANS[0];
+    const menu = Object.assign({}, base, {id:'defaults', label:'Saved defaults', kcal:0, protein:0});
+    MEAL_SECTIONS.forEach(section=>{
+      const saved = settings.mealDefaults && settings.mealDefaults[section.key];
+      menu[section.key] = RECIPE_LIBRARY[saved] ? saved : base[section.key];
+      const recipe = RECIPE_LIBRARY[menu[section.key]];
+      menu.kcal += recipe.kcal; menu.protein += recipe.protein;
+    });
+    return menu;
+  }
+
+  function movementOption(){
+    if(dayData.energy==='high'){
+      const plan = EXERCISE_PLANS[settings.exercisePlan] || EXERCISE_PLANS[DEFAULT_EXERCISE_PLAN];
+      return {title:plan.weekly[current.getDay()].title, detail:'Open the scheduled routine.', minutes:null};
+    }
+    return dayData.energy==='medium'
+      ? {title:'15-minute walk', detail:'Comfortable pace.', minutes:15}
+      : {title:'5-minute walk', detail:'Comfortable pace. Shorten or skip if needed.', minutes:5};
+  }
+
+  function renderFocusToday(){
+    const option = movementOption(), menu = defaultMenu();
+    document.getElementById('focusToday').innerHTML =
+      '<h2>Today’s actions</h2><div class="card"><h3>Food</h3>'+
+      '<div class="note">'+(settings.mealDefaults ? 'Saved meals' : 'Choose meals you want to repeat.')+'</div>'+
+      MEAL_SECTIONS.map(section=>'<div class="default-meal"><span>'+section.label+': '+escapeText(RECIPE_LIBRARY[menu[section.key]].name)+'</span><button data-default-recipe="'+menu[section.key]+'" aria-label="View '+escapeText(section.label)+' recipe">Recipe</button></div>').join('')+
+      '<button class="focus-link" id="editDefaults">Choose defaults</button> · <button class="focus-link" id="defaultGroceries">Grocery list</button>'+
+      '<button class="action-button" id="foodAction" aria-pressed="'+!!dayData.foodOnPlan+'">'+(dayData.foodOnPlan?'✓ ':'')+'Ate as planned</button>'+
+      '<button class="focus-link" id="todayMeals">Meal details / substitutions</button><span id="todayMealTitle" hidden>'+escapeText(RECIPE_LIBRARY[menu.dinner].name)+'</span></div>'+
+      '<div class="card"><h3>Movement</h3><div class="energy-picker" role="group" aria-label="Energy">'+
+      ['low','medium','high'].map(energy=>'<button class="chip'+(dayData.energy===energy?' active':'')+'" data-energy="'+energy+'" aria-pressed="'+(dayData.energy===energy)+'">'+energy[0].toUpperCase()+energy.slice(1)+'</button>').join('')+'</div>'+
+      '<div id="todayWorkoutTitle">'+escapeText(option.title)+'</div><div class="note">'+option.detail+'</div>'+
+      '<button class="action-button" id="movementAction" aria-pressed="'+!!dayData.movementDone+'">'+(dayData.movementDone?'✓ ':'')+'Movement completed</button>'+
+      '<button class="focus-link" id="todayWorkout">Scheduled routine</button></div>'+
+      '<button class="focus-link" id="viewProgress">Weight, waist & weekly review →</button>';
+    document.getElementById('waistInput').value = dayData.waist ?? '';
+    document.getElementById('foodAction').onclick = ()=>{dayData.foodOnPlan=!dayData.foodOnPlan;persistAndRerender();};
+    document.getElementById('movementAction').onclick = ()=>{
+      dayData.movementDone=!dayData.movementDone;
+      // Record the action separately from minutes and exercise checklists.
+      // Unchecking never deletes separately logged exercise or movement.
+      dayData.movementChoice = dayData.movementDone ? {energy:dayData.energy||'low', title:option.title} : null;
+      persistAndRerender();
+    };
+    document.querySelectorAll('[data-energy]').forEach(button=>button.onclick=()=>{
+      dayData.energy=button.dataset.energy;persistAndRerender();
+    });
+    document.querySelectorAll('[data-default-recipe]').forEach(button=>button.onclick=()=>openRecipeInfo(button.dataset.defaultRecipe));
+    document.getElementById('editDefaults').onclick=openDefaultsEditor;
+    document.getElementById('defaultGroceries').onclick=openDefaultGroceries;
+    document.getElementById('todayMeals').onclick=()=>tabMeals.click();
+    document.getElementById('todayWorkout').onclick=()=>tabExercise.click();
+    document.getElementById('viewProgress').onclick=()=>tabTrends.click();
+  }
+
+  function openDefaultsEditor(){
+    const menu=defaultMenu();
+    const html='<div class="default-editor">'+MEAL_SECTIONS.map(section=>
+      '<label for="default-'+section.key+'">'+section.label+'</label><select id="default-'+section.key+'">'+
+      Object.keys(RECIPE_LIBRARY).filter(id=>RECIPE_LIBRARY[id].meal===(section.key==='snacks'?'snack':section.key)).map(id=>
+        '<option value="'+id+'"'+(menu[section.key]===id?' selected':'')+'>'+escapeText(RECIPE_LIBRARY[id].name)+'</option>').join('')+'</select>'
+    ).join('')+'<button class="action-button" id="saveDefaults">Save defaults</button><div class="note" id="defaultsStatus" role="status"></div></div>';
+    openInfoModal('Meal defaults',html);
+    document.getElementById('saveDefaults').onclick=async()=>{
+      const defaults={};MEAL_SECTIONS.forEach(section=>defaults[section.key]=document.getElementById('default-'+section.key).value);
+      const previous=settings.mealDefaults;
+      settings.mealDefaults=defaults;
+      if(!lsSet('settings',JSON.stringify(settings))){settings.mealDefaults=previous;document.getElementById('defaultsStatus').textContent='Could not save defaults.';return;}
+      closeInfoModal();renderFocusToday();
+    };
+  }
+
+  function openDefaultGroceries(){
+    const menu=defaultMenu(), lines=collectWeekIngredients({source:'static',mealPlan:menu});
+    openInfoModal('Default meal groceries','<div class="note">Ingredients for one day of saved meals. Adjust amounts for the days you plan to repeat them.</div><ul class="cue-list">'+
+      lines.map(line=>'<li>'+escapeText(line.text)+(line.count>1?' ×'+line.count:'')+'</li>').join('')+'</ul>');
+  }
+
+  function weightInUnit(data, unit){
+    const source=data.weightUnit || settings.unit;
+    return source===unit ? data.weight : unit==='lb' ? data.weight*2.2046226218 : data.weight/2.2046226218;
+  }
+
+  function stampLegacyWeightUnits(){
+    // Old logs did not store units. Preserve the current setting as their
+    // inferred unit before allowing any new unit switch.
+    lsKeys('log:').forEach(key=>{
+      try{const data=JSON.parse(lsGet(key));if(data && data.weight && !data.weightUnit){data.weightUnit=settings.unit;lsSet(key,JSON.stringify(data));}}catch(e){}
+    });
+  }
+
+  function loggedHistory(){
+    const today=keyFor(new Date());
+    return lsKeys('log:').map(key=>{
+      try{const date=key.slice(4),data=JSON.parse(lsGet(key));return /^\d{4}-\d{2}-\d{2}$/.test(date) && date<=today && data ? {date,data} : null;}catch(e){return null;}
+    }).filter(Boolean).sort((a,b)=>a.date.localeCompare(b.date));
+  }
+
+  function progressHtml(){
+    const history=loggedHistory(), unit=settings.unit;
+    const groups=new Map();
+    history.forEach(entry=>{
+      if(!Number.isFinite(entry.data.weight) || entry.data.weight<=0)return;
+      const week=isoWeekKey(new Date(entry.date+'T12:00:00'));
+      if(!groups.has(week))groups.set(week,[]);
+      groups.get(week).push(weightInUnit(entry.data,unit));
+    });
+    const weeks=Array.from(groups,([week,values])=>({week,n:values.length,avg:values.reduce((a,b)=>a+b,0)/values.length}));
+    const thisWeek=isoWeekKey(new Date()), latest=weeks.find(week=>week.week===thisWeek);
+    const baseline=weeks[0], previousDate=new Date();previousDate.setDate(previousDate.getDate()-7);
+    const previous=weeks.find(week=>week.week===isoWeekKey(previousDate));
+    const goal=unit==='lb' ? settings.weightLossGoalLb : settings.weightLossGoalLb/2.2046226218;
+    const loss=latest && baseline ? baseline.avg-latest.avg : null;
+    const pct=loss==null?0:Math.max(0,Math.min(100,100*loss/goal));
+    const waists=history.filter(entry=>Number.isFinite(entry.data.waist) && entry.data.waist>0);
+    const waist=waists.at(-1), waistChange=waist ? waist.data.waist-waists[0].data.waist : null;
+    const start=new Date();start.setDate(start.getDate()-((start.getDay()+6)%7));
+    const recent=history.filter(entry=>entry.date>=keyFor(start));
+    const elapsed=((new Date().getDay()+6)%7)+1;
+    const food=recent.filter(entry=>entry.data.foodOnPlan).length;
+    const movement=recent.filter(entry=>entry.data.movementDone).length;
+    const energyCounts={low:0,medium:0,high:0};recent.forEach(entry=>{if(entry.data.energy in energyCounts)energyCounts[entry.data.energy]++;});
+    const signed=value=>(value>0?'+':'')+value.toFixed(1);
+    let review='Log weight on a few mornings to establish a weekly average.';
+    if(latest && latest.n<3)review='This week has '+latest.n+' weigh-in'+(latest.n===1?'':'s')+'. Add measurements on other mornings before comparing weeks.';
+    else if(latest && (!previous || previous.n<3))review='Keep the same meal defaults this week. Two weeks with at least 3 weigh-ins each will give a more useful comparison.';
+    else if(latest && previous){
+      if(food<Math.ceil(elapsed/2))review='For next week: choose a meal default that is easier to prepare or buy.';
+      else if(energyCounts.low>=3)review='For next week: keep movement to short walks. Persistent low energy warrants a clinician check-in.';
+      else review='For next week: repeat the meal defaults and movement options. Review another weekly average before changing the plan.';
+    }
+    let html='<div class="card"><h3>Weight progress</h3><div class="note">Calendar-week averages. Goal is total weight loss; belly-fat loss is not measured here.</div>'+
+      '<label for="dailyGoalInput">Loss goal ('+unit+')</label> <input id="dailyGoalInput" type="number" min="0.1" step="0.1" inputmode="decimal" value="'+goal.toFixed(1)+'">'+
+      '<div class="progress-stats"><div><strong>'+(latest?latest.avg.toFixed(1)+' '+unit:'—')+'</strong><span>This week · '+(latest?latest.n:0)+' weigh-ins</span></div>'+
+      '<div><strong>'+(loss==null?'—':signed(-loss)+' '+unit)+'</strong><span>Change from starting week'+(baseline?' ('+baseline.week+')':'')+'</span></div></div>'+
+      '<div class="progress-track" role="progressbar" aria-label="Weight loss goal progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="'+Math.round(pct)+'"><div class="progress-fill" style="width:'+pct+'%"></div></div>'+
+      '<div class="note">'+(latest && previous?'Versus last week: '+signed(latest.avg-previous.avg)+' '+unit+'. ':'')+'Daily changes can reflect water and digestion.</div>'+
+      (weeks.length?weeks.slice(-8).map(week=>'<div class="week-average"><span>'+week.week+' · '+week.n+' weigh-ins</span><b>'+week.avg.toFixed(1)+' '+unit+'</b></div>').join(''):'<div class="note">No weight measurements yet.</div>')+'</div>'+
+      '<div class="card"><h3>Waist</h3><div class="progress-stats"><div><strong>'+(waist?waist.data.waist.toFixed(1)+' in':'—')+'</strong><span>'+(waist?waist.date:'Optional weekly measurement')+'</span></div><div><strong>'+(waistChange==null?'—':signed(waistChange)+' in')+'</strong><span>Change from first measurement</span></div></div></div>'+
+      '<div class="card"><h3>This week</h3><div class="review-line">Meals as planned: '+food+' / '+elapsed+' days<br>Movement completed: '+movement+' / '+elapsed+' days<br>Energy logged: low '+energyCounts.low+', medium '+energyCounts.medium+', high '+energyCounts.high+'</div><div class="note">'+review+'</div></div>';
+    return html;
+  }
+
+  function wireGoal(){
+    document.getElementById('dailyGoalInput').onchange=event=>{
+      const value=Number(event.target.value);
+      if(!Number.isFinite(value)||value<=0){renderTrends();return;}
+      settings.weightLossGoalLb=settings.unit==='lb'?value:value*2.2046226218;
+      saveSettings();renderTrends();
+    };
+  }
+
+  document.getElementById('waistInput').addEventListener('change',event=>{
+    const value=Number(event.target.value);
+    dayData.waist=Number.isFinite(value)&&value>0&&value<=120?value:null;
+    persistAndRerender();
+  });
+
+
   (async function init(){
     await loadSettings();
+    stampLegacyWeightUnits();
     await goTo(new Date());
+    arcWrap.style.display='none';
     checkReminder();
     setInterval(checkReminder, 60000);
   })();
