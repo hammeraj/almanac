@@ -66,13 +66,33 @@ def run():
 
             for label, viewport in VIEWPORTS:
                 print(f"--- {label} ({viewport['width']}x{viewport['height']}) ---")
-                page = browser.new_page(viewport=viewport)
+                page = browser.new_page(viewport=viewport, service_workers="block")
+                # Keep smoke tests independent of the external font service.
+                page.route("https://fonts.googleapis.com/**", lambda route: route.fulfill(status=200, content_type="text/css", body=""))
                 errors = []
+                page.on("pageerror", lambda e: errors.append(str(e)))
                 page.on("console", lambda m: errors.append(m.text) if m.type == "error" else None)
                 page.goto(url)
                 page.wait_for_selector("#todayView.active")
 
                 check(page.is_visible("#arcSvg"), "today tab shows tracker")
+                check(bool(page.text_content("#todayWorkoutTitle")), "dashboard shows the day's workout")
+                check(bool(page.text_content("#todayMealTitle")), "dashboard shows dinner")
+                check(page.evaluate("document.documentElement.scrollWidth <= innerWidth"), "layout fits viewport")
+
+                page.click("#waterPlus")
+                page.get_by_role("button", name="8h", exact=True).click()
+                page.reload()
+                page.wait_for_selector("#todayView.active")
+                check("1" in page.text_content("#waterVal"), "water entry survives reload")
+                check(page.get_by_role("button", name="8h", exact=True).get_attribute("aria-pressed") == "true", "sleep selection survives reload")
+
+                page.click("#todayWorkout")
+                check(page.is_visible("#exerciseView.active"), "workout shortcut opens exercise")
+                check(page.get_attribute("#tabExercise", "aria-pressed") == "true", "navigation exposes selected section")
+                page.click("#tabToday")
+                page.click("#todayMeals")
+                check(page.is_visible("#mealsView.active"), "meal shortcut opens meals")
 
                 page.click("#tabExercise")
                 page.wait_for_timeout(200)
