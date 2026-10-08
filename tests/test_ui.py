@@ -75,15 +75,17 @@ def run():
                 page.goto(url)
                 page.wait_for_selector("#todayView.active")
 
-                check(page.is_visible("#arcSvg"), "today tab shows tracker")
+                check(not page.is_visible("#arcSvg"), "today separates actions from measurements")
                 check(bool(page.text_content("#todayWorkoutTitle")), "dashboard shows the day's workout")
                 check(bool(page.text_content("#todayMealTitle")), "dashboard shows dinner")
                 check(page.evaluate("document.documentElement.scrollWidth <= innerWidth"), "layout fits viewport")
 
+                page.click("#otherLogs summary")
                 page.click("#waterPlus")
                 page.get_by_role("button", name="8h", exact=True).click()
                 page.reload()
                 page.wait_for_selector("#todayView.active")
+                page.click("#otherLogs summary")
                 check("1" in page.text_content("#waterVal"), "water entry survives reload")
                 check(page.get_by_role("button", name="8h", exact=True).get_attribute("aria-pressed") == "true", "sleep selection survives reload")
 

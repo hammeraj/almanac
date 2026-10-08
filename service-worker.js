@@ -1,4 +1,4 @@
-const CACHE_NAME = 'almanac-v3';
+const CACHE_NAME = 'almanac-v4';
 const APP_SHELL = [
   './',
   './index.html',
