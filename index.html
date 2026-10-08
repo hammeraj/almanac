@@ -307,7 +307,6 @@
   .arc-caption{font-size:12px;line-height:1.5;max-width:170px;margin:0;}
   .daily-overview{margin-bottom:22px;}
   .daily-overview h2{font-size:28px;letter-spacing:-.03em;margin-bottom:6px;}
-  .daily-intro{font-size:13px;color:var(--ink-soft);line-height:1.6;margin:0 0 14px;}
   .overview-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
   .overview-link{display:flex;flex-direction:column;align-items:flex-start;text-align:left;border:1px solid var(--line);border-radius:16px;padding:14px;background:var(--card);color:var(--ink);gap:8px;}
   .overview-link svg{width:20px;height:20px;color:var(--moss);}
@@ -367,14 +366,13 @@
 
   <div id="todayView" class="view active">
     <section class="daily-overview" aria-labelledby="dailyHeading">
-      <h2 id="dailyHeading">A little care, every day.</h2>
-      <p class="daily-intro">Check in with yourself, then make room for what feels good.</p>
+      <h2 id="dailyHeading">Day plan</h2>
       <div class="overview-grid">
         <button class="overview-link" id="todayWorkout"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 4 14 14M3 7l4-4M17 21l4-4M3 11l8-8M13 21l8-8"/></svg><span class="overview-label">Movement plan</span><span class="overview-title" id="todayWorkoutTitle"></span><span class="overview-detail" id="todayWorkoutDetail"></span></button>
         <button class="overview-link" id="todayMeals"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3v7a3 3 0 0 0 6 0V3M8 3v18M19 3c-4 3-4 8 0 9v9M19 3v9"/></svg><span class="overview-label">On the menu</span><span class="overview-title" id="todayMealTitle"></span><span class="overview-detail" id="todayMealDetail"></span></button>
       </div>
     </section>
-    <div class="section-heading"><h3>Your daily check-in</h3><span>One moment at a time</span></div>
+    <div class="section-heading"><h3>Daily log</h3></div>
 
     <div class="card">
       <div class="card-top">
@@ -544,7 +542,7 @@
   const EXERCISE_PLANS = {
     'desk-job': {
       label: 'Desk job',
-      whyNote: 'Extra attention on calves, ankles, and glutes throughout \u2014 that\u2019s where a little consistent work tends to pay off most for hip, back, and ankle comfort.',
+      whyNote: 'Focus: calves, ankles, and glutes.',
       morning: MORNING_ROUTINE,
       weekly: WEEKLY_EXERCISE
     }
@@ -769,9 +767,7 @@
     const n = completion(), total = 5;
     drawArc(n, total);
     const caption = document.getElementById('arcCaption');
-    if(n===total) caption.innerHTML = '<b>All five</b> logged — nicely done';
-    else if(n>0) caption.innerHTML = '<b>'+n+'</b> of 5 habits logged';
-    else caption.textContent = 'Your check-in starts with one small step.';
+    caption.innerHTML = '<b>'+n+'</b> of '+total+' habits logged';
   }
 
   function renderExerciseArc(){
@@ -785,9 +781,7 @@
     const total = plan.morning.length + day.items.length;
     drawArc(n, total);
     const caption = document.getElementById('arcCaption');
-    if(total>0 && n===total) caption.innerHTML = '<b>All done</b> — nice work';
-    else if(n>0) caption.innerHTML = '<b>'+n+'</b> of '+total+' exercises done';
-    else caption.innerHTML = '';
+    caption.innerHTML = '<b>'+n+'</b> of '+total+' exercises done';
   }
 
   function renderMealsArc(){
@@ -1806,7 +1800,7 @@
     if(nowClock < settings.reminderTime) return;
     if(isTodayLogged()) return;
     navigator.serviceWorker.ready.then(reg=>{
-      reg.showNotification('Almanac', {body:'Haven’t logged today yet — a minute now beats a blank day.', icon:'icon-192.png'});
+      reg.showNotification('Almanac', {body:'No entries logged today.', icon:'icon-192.png'});
     }).catch(()=>{});
     settings.lastReminderDate = todayKey;
     saveSettings();
